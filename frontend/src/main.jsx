@@ -1,7 +1,7 @@
 import React, { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Register } from "./pages/register.jsx";
-import { Footer } from "./footer.jsx"
+import { Footer } from "./pages/footer.jsx"
 import { Login } from "./pages/login.jsx";
 import './index.css'
 
@@ -11,9 +11,9 @@ const root = createRoot(rootElement);
 root.render(
   <StrictMode>
     <>
+      <Login />
       <Register /> 
       <Footer/>
-      <Login />
     </>
   </StrictMode>
 );

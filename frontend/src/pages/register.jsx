@@ -54,26 +54,6 @@ export  const Register = () => {
             <h2>Register</h2>
             <form onSubmit={handleSubmit}>
                 <label>
-                    First name:
-                    <input 
-                        type='text'
-                        name='firstName'
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        required
-                    />
-                </label>
-                <label>
-                    Last name:
-                    <input 
-                        type='text'
-                        name='lastName'
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        required
-                    />
-                </label>
-                <label>
                     Username:
                     <input 
                         type='text'
@@ -89,6 +69,26 @@ export  const Register = () => {
                         type='password'
                         name='password'
                         value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+                <label>
+                    First name:
+                    <input 
+                        type='text'
+                        name='firstName'
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+                <label>
+                    Last name:
+                    <input 
+                        type='text'
+                        name='lastName'
+                        value={formData.lastName}
                         onChange={handleChange}
                         required
                     />

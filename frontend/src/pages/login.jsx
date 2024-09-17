@@ -21,7 +21,7 @@ import React, { useState } from 'react';
         try {
             const response = await fetch("http://localhost:8081/login", {
                 method: 'POST',
-                body:JSON.stringify(formData)
+                body:JSON.stringify(formData),
             });
 
             if (!response.ok) {
@@ -30,7 +30,7 @@ import React, { useState } from 'react';
             }
 
             const result = await response.text();
-            console.log('Login successful:', result);
+            console.log('Login successful:', formData);
         } catch (error) {
             console.error('Error submitting form:', error);
         }
@@ -44,6 +44,7 @@ import React, { useState } from 'react';
                 Username or Email:
                     <input
                     type='text'
+                    name='usernameOrEmail'
                     value={formData.usernameOrEmail}
                     onChange={handleChange}
                     required
@@ -53,6 +54,7 @@ import React, { useState } from 'react';
                 Password:
                     <input
                     type='password'
+                    name='password'
                     value={formData.password}
                     onChange={handleChange}
                     required

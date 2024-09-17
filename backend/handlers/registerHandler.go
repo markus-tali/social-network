@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"main.go/backend/database/get"
 	"main.go/backend/database/set"
+	"main.go/backend/helpers"
 )
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +34,22 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received inputdata", dateofBirth, username, password, firstname, lastname, email, aboutMe, nickname)
 	// Send a response back to the client
 
-	set.InsertUser(username, firstname, lastname, email, password)
+	if get.CheckExistingUsernameOrEmail(email) {
+		w.Write([]byte("Email already exists!"))
+		fmt.Println("Email already exists!")
+		return
+	}
+
+	if get.CheckExistingUsernameOrEmail(username) {
+		w.Write([]byte("Username already exists!"))
+		fmt.Println("Username already exists!")
+		return
+	}
+
+	hashedPswd, err := helpers.EncryptPassword(password)
+	helpers.CheckError(err)
+
+	set.InsertUser(username, firstname, lastname, email, hashedPswd)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Data received successfully"))
