@@ -12,6 +12,7 @@ import (
 func main() {
 	create.Create()
 
+	http.HandleFunc("/ws", handlers.WsHandler)
 	http.HandleFunc("/register", handlers.RegisterHandler)
 	http.HandleFunc("/login", handlers.LoginHandler)
 
