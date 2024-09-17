@@ -21,10 +21,33 @@ export  const Register = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Form submitted:", formData);
+
+        const formDataToSend = new FormData();
+        for (const key in formData) {
+            if (formData[key] !== null){
+                formDataToSend.append(key, formData[key])
+            }
+        }
+            try {
+                const response = await fetch("http://localhost:8081/register", {
+                method: 'POST',
+                body: formDataToSend
+                });
+
+                if(!response.ok) {
+                    throw new Error('Network response was not ok')
+                }
+                const result = await response.text();
+                console.log('Form submitted successfully:', result)
+            }catch(error) {
+                console.error ('Error submitting form:', error)
+            }
     };
+
+
 
     return (
         <div>
@@ -119,4 +142,3 @@ export  const Register = () => {
         </div>
     );
 };
-

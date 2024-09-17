@@ -2,13 +2,13 @@ package structs
 
 type User struct {
 	Id          string
-	DateofBirth string
-	Username    string
-	Password    string
-	FirstName   string
-	LastName    string
-	Email       string
-	AboutMe     string
-	Nickname    string
-	Avatar      string
+	DateofBirth string `json:"dateofBirth"`
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	FirstName   string `json:"firstName"`
+	LastName    string `json:"lastName"`
+	Email       string `json:"email"`
+	AboutMe     string `json:"aboutMe"`
+	Nickname    string `json:"nickname"`
+	Avatar      string `json:"avatar"`
 }

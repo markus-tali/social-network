@@ -1,11 +1,10 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
-	"main.go/backend/structs"
+	"main.go/backend/database/set"
 )
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
@@ -14,25 +13,26 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	var inputData structs.User
-	err := json.NewDecoder(r.Body).Decode(&inputData)
+	// Parse the multipart form data
+	err := r.ParseMultipartForm(10 << 20) // Limit your file size (e.g., 10MB)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Unable to parse form", http.StatusBadRequest)
 		return
 	}
-	fmt.Println("Received input: ", inputData)
-	dateofBirth := inputData.DateofBirth
-	username := inputData.Username
-	password := inputData.Password
-	firstname := inputData.FirstName
-	lastname := inputData.LastName
-	email := inputData.Email
-	aboutMe := inputData.AboutMe
-	nickName := inputData.Nickname
-	avatar := inputData.Avatar
 
-	fmt.Println("Received inputdata", dateofBirth, username, password, firstname, lastname, email, aboutMe, nickName, avatar)
+	dateofBirth := r.FormValue("dateofBirth")
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+	firstname := r.FormValue("firstName")
+	lastname := r.FormValue("lastName")
+	email := r.FormValue("email")
+	aboutMe := r.FormValue("aboutMe")
+	nickname := r.FormValue("nickname")
+
+	fmt.Println("Received inputdata", dateofBirth, username, password, firstname, lastname, email, aboutMe, nickname)
 	// Send a response back to the client
+
+	set.InsertUser(username, firstname, lastname, email, password)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Data received successfully"))

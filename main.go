@@ -5,11 +5,17 @@ import (
 	"log"
 	"net/http"
 
+	"main.go/backend/database/create"
 	"main.go/backend/handlers"
 )
 
 func main() {
+	create.Create()
+
 	http.HandleFunc("/register", handlers.RegisterHandler)
-	fmt.Println("Server is running on http://localhost:8081")
+	http.HandleFunc("/login", handlers.LoginHandler)
+
+	fmt.Println("Backend server is running")
+
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }
