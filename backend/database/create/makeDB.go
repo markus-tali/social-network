@@ -2,17 +2,10 @@ package create
 
 import (
 	"database/sql"
-	"fmt"
 
 	_ "github.com/mattn/go-sqlite3"
 	"main.go/backend/helpers"
 )
-
-func Create() {
-	CreateUserTable()
-	fmt.Println("User table created!")
-
-}
 
 // connects to the db
 func ConnectDB() (*sql.DB, error) {

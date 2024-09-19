@@ -49,7 +49,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	hashedPswd, err := helpers.EncryptPassword(password)
 	helpers.CheckError(err)
 
-	set.InsertUser(username, firstname, lastname, email, hashedPswd)
+	set.InsertUser(username, firstname, lastname, email, hashedPswd, dateofBirth, aboutMe, nickname)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Data received successfully"))

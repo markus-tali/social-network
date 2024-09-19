@@ -6,7 +6,7 @@ export function setupWebSocket() {
   }
   socket = new WebSocket("ws://localhost:8081/ws");
   
-  socket.addEventListener("open", (event) => {
+  socket.onopen = ((event) => {
     console.log("WebSocket connection opened");
     socket.send(
       JSON.stringify({
@@ -14,10 +14,11 @@ export function setupWebSocket() {
         status: "online",
       })
     );
-  }); socket.addEventListener("error", (error) => {
+  }); socket.onerror =((error) => {
     console.error("WebSocket error:", error);
   });
-  socket.addEventListener("close", (event) => {
+  socket.onclose =( (event) => {
     console.log("WebSocket closed:", event);
   });
   return socket;
+}

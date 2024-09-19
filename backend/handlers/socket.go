@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -19,6 +20,23 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
+
 	defer conn.Close()
+
+	for {
+		messageType, message, err := conn.ReadMessage()
+		if err != nil {
+			log.Println("Read error:", err)
+			break
+		}
+
+		log.Printf("Received: %s", message)
+		err = conn.WriteMessage(messageType, message)
+		if err != nil {
+			log.Println("Write error:", err)
+			break
+		}
+	}
+	//
 
 }
