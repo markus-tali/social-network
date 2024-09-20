@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"main.go/backend/database/set"
@@ -15,20 +13,20 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	var postData map[string]string
 	_, username, err := GetCookies(w, r)
 	helpers.CheckError(err)
 
-	err = json.NewDecoder(r.Body).Decode(&postData)
+	// Parse the multipart form data (because of avatar files)
+	err = r.ParseMultipartForm(10 << 20) // Limit your file size (e.g., 10MB)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Unable to parse form", http.StatusBadRequest)
 		return
 	}
-	postTitle := postData["postTitle"]
-	postText := postData["postText"]
-	postCategory := postData["postCategory"]
-	fmt.Printf("Received post input: %v\n", postData)
-	set.InsertPost(username, postTitle, postText, postCategory)
+	postTitle := r.FormValue("title")
+	postText := r.FormValue("content")
+	///postAvatar := r.FormFile("avatar")
+
+	set.InsertPost(username, postTitle, postText)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Data received successfully"))
 }

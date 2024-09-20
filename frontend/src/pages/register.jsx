@@ -10,7 +10,7 @@ export  const Register = () => {
         email: '',
         aboutMe: '',
         nickname: '',
-        avatar: null,
+        avatar: '',
     });
 
     const handleChange = (e) => {
@@ -38,7 +38,8 @@ export  const Register = () => {
                 });
 
                 if(!response.ok) {
-                    throw new Error('Network response was not ok')
+                    const errorMessage = await response.text();  // Get the error message
+                    throw new Error(`Network response was not ok: ${errorMessage}`);
                 }
                 const result = await response.text();
                 console.log('Form submitted successfully:', result)

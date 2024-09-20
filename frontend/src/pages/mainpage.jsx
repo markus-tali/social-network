@@ -1,11 +1,20 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { handleLogout } from '../components/handeLogout';
+import { CreatePost } from './createpost.jsx'
 
 export function Mainpage({onLogout }) {
+    const [isCreatingPost, setIsCreatingPost] = useState(false)
 
     const handleLogoutClick = () => {
         handleLogout(onLogout);
     };
+
+    const handleCreatePostClick = () => {
+        setIsCreatingPost(true)
+    }
+    const handlePostCreated = () => {
+        setIsCreatingPost(false)
+    }
 
     return (
         <div className="mainpage">
@@ -16,7 +25,7 @@ export function Mainpage({onLogout }) {
                         <li><a href="#about">About</a></li>
                         <li><a href="#users">Users</a></li>
                         <li>
-                        <button > Create Post</button>
+                        <button onClick={handleCreatePostClick}> Create Post</button>
                         </li>
                         <li>
                             <button onClick={handleLogoutClick}>Log out</button>
@@ -25,8 +34,13 @@ export function Mainpage({onLogout }) {
                 </nav>
             </header>
             <main className='content'>
-                <p>Main content area</p>
+                {!isCreatingPost ? (
+                    <p>Main content area</p>
+                ) : (
+                    <CreatePost onPostCreated={handlePostCreated} />
+                )}
             </main>
+
             <footer>
                 <p>&copy; 2024. Trailer Park Bois</p>
             </footer>

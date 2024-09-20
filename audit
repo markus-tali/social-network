@@ -1,5 +1,4 @@
-GOOSE_DRIVER=sqlite3 GOOSE_DBSTRING=./backend/database/database.db goose -s -dir ./backe
-nd/migrations create addUserTable sql
+GOOSE_DRIVER=sqlite3 GOOSE_DBSTRING=./backend/database/database.db goose -s -dir ./backend/migrations create addUserTable sql
 
 up/down
 GOOSE_DRIVER=sqlite3 GOOSE_DBSTRING=./backend/database/database.db goose -s -dir ./backend/migrations down
@@ -9,9 +8,9 @@ GOOSE_DRIVER=sqlite3 GOOSE_DBSTRING=./backend/database/database.db goose -s -dir
 ~~Has the requirement for the allowed packages been respected?~~
 
 Open the project
-When examining the file system of the backend, did you find a well-organized structure, similar to the example provided in the subject, with a clear separation of packages and migrations folders?
+~~When examining the file system of the backend, did you find a well-organized structure, similar to the example provided in the subject, with a clear separation of packages and migrations folders?~~
 
-Is the file system for the frontend well organized?
+~~Is the file system for the frontend well organized?~~
 
 `Backend`
 
@@ -29,12 +28,12 @@ Is the core logic of the social network implemented within the App component, in
 
 Are clients able to request information stored in the database, and can they submit data to be added to it without encountering errors or issues?
 
-Does the app implement a migration system?
+~~Does the app implement a migration system?~~
 
 Is that migration file system well organized? (like the example from the subject)
 
-Start the social network application, then enter the database using the command "sqlite3 <database_name.db>".
-Are the migrations being applied by the migration system?
+~~Start the social network application, then enter the database using the command "sqlite3 <database_name.db>".~~
+~~Are the migrations being applied by the migration system?~~
 
 `Authentication`
 
@@ -43,16 +42,16 @@ Does the app implement sessions for the authentication of the users?
 ~~Are the correct form elements being used in the registration? (Email, Password, First Name, Last Name, Date of Birth, Avatar/Image (Optional), Nickname (Optional), About Me (Optional))~~
 
 Try to register a user.
-During registration, when attempting to register a user, did the application correctly save the registered user to the database without any errors?
+~~During registration, when attempting to register a user, did the application correctly save the registered user to the database without any errors?~~
 
 Try to log in with the user you just registered.
-When attempting to log in with the user you just registered, did the login process work without any problems?
+~~When attempting to log in with the user you just registered, did the login process work without any problems?~~
 
 Try to log in with the user you created, but with a wrong password or email.
-Did the application correctly detect and respond to the incorrect login details?
+~~Did the application correctly detect and respond to the incorrect login details?~~
 
 Try to register the same user you already registered.
-Did the app detect if the email/user is already present in the database?
+~~Did the app detect if the email/user is already present in the database?~~
 
 Open two browsers (ex: Chrome and Firefox), log in into one and refresh the other browsers.
 Can you confirm that the browser non logged remains unregistered?

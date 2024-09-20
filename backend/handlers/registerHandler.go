@@ -2,7 +2,10 @@ package handlers
 
 import (
 	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"main.go/backend/database/get"
 	"main.go/backend/database/set"
@@ -15,10 +18,10 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	// Parse the multipart form data
-	err := r.ParseMultipartForm(10 << 20) // Limit your file size (e.g., 10MB)
+
+	err := r.ParseMultipartForm(10 << 20) // 10 MB limit
 	if err != nil {
-		http.Error(w, "Unable to parse form", http.StatusBadRequest)
+		http.Error(w, "Could not parse form", http.StatusBadRequest)
 		return
 	}
 
@@ -31,25 +34,65 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	aboutMe := r.FormValue("aboutMe")
 	nickname := r.FormValue("nickname")
 
-	fmt.Println("Received inputdata", dateofBirth, username, password, firstname, lastname, email, aboutMe, nickname)
-	// Send a response back to the client
-
+	// Check if email or username already exists
 	if get.CheckExistingUsernameOrEmail(email) {
-		w.Write([]byte("Email already exists!"))
-		fmt.Println("Email already exists!")
+		http.Error(w, "Email already exists!", http.StatusConflict)
+		return
+	}
+	if get.CheckExistingUsernameOrEmail(username) {
+		http.Error(w, "Username already exists!", http.StatusConflict)
 		return
 	}
 
-	if get.CheckExistingUsernameOrEmail(username) {
-		w.Write([]byte("Username already exists!"))
-		fmt.Println("Username already exists!")
+	// Handling avatar upload
+	file, fileHeader, err := r.FormFile("avatar")
+	if err != nil {
+		fmt.Println("Error retrieving the file:", err)
+		http.Error(w, "Error uploading file", http.StatusBadRequest)
 		return
+	}
+
+	fmt.Printf("Received file: %s, Size: %d bytes\n", fileHeader.Filename, fileHeader.Size)
+
+	var avatarPath string
+	if err == nil {
+		defer file.Close()
+
+		// Ensure the uploads directory exists
+		uploadDir := "./backend/database/assets/"
+
+		// Create a unique file name
+		fileName := fmt.Sprintf("%s_%s", username, fileHeader.Filename)
+		avatarPath = filepath.Join(uploadDir, fileName)
+		fmt.Println(avatarPath)
+
+		// Create the file in the uploads directory
+		outFile, err := os.Create(avatarPath)
+		if err != nil {
+			http.Error(w, "Could not save avatar", http.StatusInternalServerError)
+			return
+		}
+		defer outFile.Close()
+
+		// Copy the file content to the destination file
+		_, err = io.Copy(outFile, file)
+		if err != nil {
+			http.Error(w, "Failed to save file", http.StatusInternalServerError)
+			return
+		}
+	} else {
+		fmt.Println("No avatar uploaded")
+		avatarPath = ""
 	}
 
 	hashedPswd, err := helpers.EncryptPassword(password)
 	helpers.CheckError(err)
 
-	set.InsertUser(username, firstname, lastname, email, hashedPswd, dateofBirth, aboutMe, nickname)
+	set.InsertUser(username, firstname, lastname, email, hashedPswd, dateofBirth, aboutMe, nickname, avatarPath)
+	if err != nil {
+		http.Error(w, "Failed to register user", http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Data received successfully"))
