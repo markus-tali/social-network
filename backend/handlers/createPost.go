@@ -17,9 +17,9 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	helpers.CheckError(err)
 
 	// Parse the multipart form data (because of avatar files)
-	err = r.ParseMultipartForm(10 << 20) // Limit your file size (e.g., 10MB)
+	err = r.ParseMultipartForm(1 << 20) // Limit your file size (e.g., 10MB)
 	if err != nil {
-		http.Error(w, "Unable to parse form", http.StatusBadRequest)
+		http.Error(w, "Unable to parse form, file too big", http.StatusBadRequest)
 		return
 	}
 	postTitle := r.FormValue("title")

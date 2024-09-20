@@ -135,6 +135,7 @@ export  const Register = () => {
                     <input 
                         type='file'
                         name='avatar'
+                        accept='image/*'
                         onChange={handleChange}
                     />
                 </label>

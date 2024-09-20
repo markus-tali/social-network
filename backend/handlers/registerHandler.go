@@ -19,9 +19,9 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := r.ParseMultipartForm(10 << 20) // 10 MB limit
+	err := r.ParseMultipartForm(1 << 20) // 1 MB limit
 	if err != nil {
-		http.Error(w, "Could not parse form", http.StatusBadRequest)
+		http.Error(w, "Could not parse form, file too big", http.StatusBadRequest)
 		return
 	}
 
@@ -57,6 +57,13 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	var avatarPath string
 	if err == nil {
 		defer file.Close()
+
+		// Check if the file exceeds 1MB
+		const maxFileSize = 1 * 1024 * 1024 // 1MB in bytes
+		if fileHeader.Size > maxFileSize {
+			http.Error(w, "File size exceeds 1MB", http.StatusRequestEntityTooLarge)
+			return
+		}
 
 		// Ensure the uploads directory exists
 		uploadDir := "./backend/database/assets/"
