@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"main.go/backend/handlers"
+	"main.go/backend/utils"
 )
 
 func main() {
@@ -15,6 +16,7 @@ func main() {
 	http.HandleFunc("/logout", handlers.LogoutHandler)
 	http.HandleFunc("/session", handlers.SessionHandler)
 	http.HandleFunc("/createpost", handlers.CreatePostHandler)
+	http.HandleFunc("/utils/avatar/", utils.ServeAvatar)
 
 	fmt.Println("Backend server is running")
 

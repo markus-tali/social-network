@@ -1,4 +1,4 @@
-export const handleLogout = async (onLogout) => {
+const handleLogout = async (onLogout) => {
     try {
         const response = await fetch("http://localhost:8081/logout", {
             method: 'POST', // or 'GET', depending on your backend
@@ -15,3 +15,4 @@ export const handleLogout = async (onLogout) => {
         console.error('Error logging out:', error);
     }
 };
+export default handleLogout

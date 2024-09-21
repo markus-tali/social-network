@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Register } from "./register.jsx";
-import { Footer } from "./footer.jsx";
 import { Login } from "./login.jsx";
 import { Mainpage } from "./mainpage.jsx";
-import { ToggleButton } from "../components/toggleButton.jsx"; // Import the ToggleButton
+import { ToggleButton } from "../components/toggleButton.jsx"; 
 
 export const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -50,7 +49,7 @@ export const App = () => {
             ) : (
                 <Mainpage  onLogout={handleLogout} />
             )}
-            {isLoggedIn && <Footer />}
+            {isLoggedIn}
         </>
     );
 };
