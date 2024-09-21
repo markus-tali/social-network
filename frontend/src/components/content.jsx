@@ -1,7 +1,7 @@
 import React from 'react';
 import CreatePost from '../pages/createpost.jsx';
 
-function Content ({ isCreatingPost, handlePostCreated}){
+function PostCreation ({ isCreatingPost, handlePostCreated}){
   return(
 <main className='content'>
 {!isCreatingPost ? (
@@ -13,4 +13,4 @@ function Content ({ isCreatingPost, handlePostCreated}){
   )
 }
 
-export default Content
+export default PostCreation

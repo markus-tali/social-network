@@ -22,6 +22,7 @@ import  setupWebSocket  from "../components/websocket.jsx";
         try {
             const response = await fetch("http://localhost:8081/login", {
                 method: 'POST',
+                credentials:'include',
                 body:JSON.stringify(formData),
             });
 

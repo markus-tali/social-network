@@ -16,7 +16,9 @@ func main() {
 	http.HandleFunc("/logout", handlers.LogoutHandler)
 	http.HandleFunc("/session", handlers.SessionHandler)
 	http.HandleFunc("/createpost", handlers.CreatePostHandler)
+	http.HandleFunc("/createcomment", handlers.CreateCommentHandler)
 	http.HandleFunc("/utils/avatar/", utils.ServeAvatar)
+	http.HandleFunc("/getposts", handlers.GetPostsHandler)
 
 	fmt.Println("Backend server is running")
 

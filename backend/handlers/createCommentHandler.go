@@ -9,25 +9,25 @@ import (
 	"main.go/backend/utils"
 )
 
-func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
+func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 	CorsEnabler(w, r)
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
+
 	_, username, err := GetCookies(w, r)
-	helpers.CheckError(err)
+	if err != nil {
+		helpers.CheckError(err)
+	}
 
 	// Parse the multipart form data (because of avatar files)
-	err = r.ParseMultipartForm(1 << 20) // Limit your file size (e.g., 10MB)
+	err = r.ParseMultipartForm(10 << 20) // Limit your file size (e.g., 10MB)
 	if err != nil {
-		http.Error(w, "Unable to parse form, file too big", http.StatusBadRequest)
+		// http.Error(w, "Unable to parse form, file too big", http.StatusBadRequest)
+		fmt.Println((err))
 		return
 	}
 
-	postTitle := r.FormValue("title")
-	postText := r.FormValue("content")
+	postId := r.FormValue("postId")
+	commentText := r.FormValue("content")
 
 	//read avatar formvalue
 	avatarPath := utils.GetAvatars(username, w, r)
@@ -38,9 +38,8 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Avatar uploaded at:", avatarPath)
 	}
 
-	fmt.Println("Post title is: ", postTitle, "Post content is: ", postText)
-
-	set.InsertPost(username, postTitle, postText, avatarPath)
+	fmt.Println("Comment is: ", commentText)
+	set.InsertComment(postId, username, commentText, avatarPath)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Data received successfully"))
 }

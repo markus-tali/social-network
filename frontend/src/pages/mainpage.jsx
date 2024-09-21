@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import Header from '../components/header.jsx';
 import Footer from "../components/footer.jsx";
-import Content from '../components/content.jsx';
+import PostCreation from '../components/content.jsx';
+import Postlist from '../components/postlist.jsx';
 
  function Mainpage({onLogout} ) {
     const [isCreatingPost, setIsCreatingPost] = useState(false)
@@ -14,10 +15,12 @@ import Content from '../components/content.jsx';
     return (
         <div className="mainpage">
           <Header onLogout={onLogout} setIsCreatingPost={setIsCreatingPost}/>
-          <Content
+          <PostCreation
         isCreatingPost={isCreatingPost}
         handlePostCreated={handlePostCreated}
             />
+            <Postlist />
+            
             <Footer />
         </div>
     );

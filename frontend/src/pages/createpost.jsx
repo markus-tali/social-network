@@ -21,7 +21,9 @@ function CreatePost(){
             const response = await fetch('http://localhost:8081/createpost', {
                 method: 'POST',
                 body: formData,
+                credentials: 'include'
             })
+            console.log(response)
             if (response.ok) {
                 const createdPost = await response.text()
                 console.log('Post created: ', createdPost)
