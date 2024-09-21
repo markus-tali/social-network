@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { setupWebSocket } from "../websocket.jsx";
+import  setupWebSocket  from "../components/websocket.jsx";
 
-    export const Login = ({onLogin}) => {
+    const Login = ({onLogin}) => {
         const [formData, setFormData] = useState({
             usernameOrEmail: '',
             password: '',
@@ -69,3 +69,4 @@ import { setupWebSocket } from "../websocket.jsx";
         </div>
     );
 }
+export default Login

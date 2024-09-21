@@ -1,12 +1,12 @@
 import React, {useState} from 'react'
 
-export function CreatePost(){
+function CreatePost(){
     const [postTitle, setPostTitle] = useState('')
     const [postContent, setPostContent] = useState('')
     const [selectedFile, setSelectedFile] = useState(null)
 
-    const handleFileChange = () =>{
-        setSelectedFile()
+    const handleFileChange = (e) =>{
+        setSelectedFile(e.target.files[0])
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -15,7 +15,7 @@ export function CreatePost(){
         formData.append('title', postTitle)
         formData.append('content', postContent)
         if (selectedFile){
-            formData.append('file', selectedFile)
+            formData.append('avatar', selectedFile)
         }
         try {
             const response = await fetch('http://localhost:8081/createpost', {
@@ -50,3 +50,4 @@ export function CreatePost(){
         </form>
     )
 }
+export default CreatePost

@@ -1,13 +1,16 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"main.go/backend/database/set"
 	"main.go/backend/helpers"
+	"main.go/backend/utils"
 )
 
 func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
+
 	CorsEnabler(w, r)
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
@@ -22,11 +25,22 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to parse form, file too big", http.StatusBadRequest)
 		return
 	}
+
 	postTitle := r.FormValue("title")
 	postText := r.FormValue("content")
-	///postAvatar := r.FormFile("avatar")
 
-	set.InsertPost(username, postTitle, postText)
+	//read avatar formvalue
+	avatarPath := utils.GetAvatars(username, w, r)
+
+	if avatarPath == "" {
+		fmt.Println("No avatar uploaded")
+	} else {
+		fmt.Println("Avatar uploaded at:", avatarPath)
+	}
+
+	fmt.Println("Post title is: ", postTitle, "Post content is: ", postText)
+
+	set.InsertPost(username, postTitle, postText, avatarPath)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Data received successfully"))
 }

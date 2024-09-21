@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Register } from "./register.jsx";
-import { Login } from "./login.jsx";
-import { Mainpage } from "./mainpage.jsx";
-import { ToggleButton } from "../components/toggleButton.jsx"; 
+import  Register from "./pages/register.jsx";
+import Login  from "./pages/login.jsx";
+import  Mainpage  from "./pages/mainpage.jsx";
+import  ToggleButton  from "./components/toggleButton.jsx"; 
 
-export const App = () => {
+const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showLogin, setShowLogin] = useState(true);
 
@@ -53,3 +53,5 @@ export const App = () => {
         </>
     );
 };
+
+export default App

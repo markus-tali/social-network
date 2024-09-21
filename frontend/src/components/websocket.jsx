@@ -1,6 +1,5 @@
 let socket;
-
-export function setupWebSocket() {
+function setupWebSocket() {
   if (socket && socket.readyState === WebSocket.OPEN) {
     return; // Prevent setting up a new WebSocket connection if one already exists
   }
@@ -22,3 +21,4 @@ export function setupWebSocket() {
   });
   return socket;
 }
+export default setupWebSocket

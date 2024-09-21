@@ -1,6 +1,7 @@
+import React, {useState} from 'react';
 import handleLogout from './handeLogout.jsx'
 
-const Header =  ({onLogout}) => {
+const Header =  ({onLogout, setIsCreatingPost}) => {
 
     const handleLogoutClick = () => {
         handleLogout(onLogout);

@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-import { CreatePost } from './createpost.jsx'
 import Header from '../components/header.jsx';
-import Footer from "../components/Footer";
-import handleLogout from '../components/handeLogout'
+import Footer from "../components/footer.jsx";
+import Content from '../components/content.jsx';
 
-export function Mainpage({onLogout} ) {
+ function Mainpage({onLogout} ) {
     const [isCreatingPost, setIsCreatingPost] = useState(false)
+
 
     const handlePostCreated = () => {
         setIsCreatingPost(false)
@@ -13,15 +13,13 @@ export function Mainpage({onLogout} ) {
 
     return (
         <div className="mainpage">
-          <Header onLogout={onLogout}/>
-            <main className='content'>
-                {!isCreatingPost ? (
-                    <p>Main content area</p>
-                ) : (
-                    <CreatePost onPostCreated={handlePostCreated} />
-                )}
-            </main>
+          <Header onLogout={onLogout} setIsCreatingPost={setIsCreatingPost}/>
+          <Content
+        isCreatingPost={isCreatingPost}
+        handlePostCreated={handlePostCreated}
+            />
             <Footer />
         </div>
     );
 }
+export default Mainpage
