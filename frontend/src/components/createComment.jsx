@@ -1,6 +1,6 @@
 import React, {useState, } from 'react';
 
-const createComment = ({onCommentSubmit}) => {
+const CreateComment = ({onCommentSubmit}) => {
 
     const [comment, setComment] = useState('');
 
@@ -30,4 +30,4 @@ const createComment = ({onCommentSubmit}) => {
   )
 }
 
-export default createComment
+export default CreateComment

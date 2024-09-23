@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-function CreatePost(){
+function CreatePost({ onPostCreated }){
     const [postTitle, setPostTitle] = useState('')
     const [postContent, setPostContent] = useState('')
     const [selectedFile, setSelectedFile] = useState(null)
@@ -27,6 +27,7 @@ function CreatePost(){
             if (response.ok) {
                 const createdPost = await response.text()
                 console.log('Post created: ', createdPost)
+
             } else {
                 console.error('Failed to create post')
             }

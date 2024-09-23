@@ -6,10 +6,12 @@ import Postlist from '../components/postlist.jsx';
 
  function Mainpage({onLogout} ) {
     const [isCreatingPost, setIsCreatingPost] = useState(false)
+    const [shouldRefreshPosts, setShouldRefreshPosts] = useState(false)
 
 
     const handlePostCreated = () => {
         setIsCreatingPost(false)
+        setShouldRefreshPosts(!shouldRefreshPosts);
     }
 
     return (
@@ -19,7 +21,7 @@ import Postlist from '../components/postlist.jsx';
         isCreatingPost={isCreatingPost}
         handlePostCreated={handlePostCreated}
             />
-            <Postlist />
+            <Postlist refreshTrigger={shouldRefreshPosts}/>
             
             <Footer />
         </div>

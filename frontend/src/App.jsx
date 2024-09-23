@@ -44,7 +44,7 @@ const App = () => {
                     ) : (
                         <Register onRegister={() => setIsRegistered(true)} />
                     )}
-                    <ToggleButton showLogin={showLogin} onToggle={handleToggle} /> {/* Use ToggleButton here */}
+                    <ToggleButton showLogin={showLogin} onToggle={handleToggle} /> 
                 </>
             ) : (
                 <Mainpage  onLogout={handleLogout} />
