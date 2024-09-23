@@ -10,7 +10,7 @@ func InsertComment(postID, username, content, avatar string) {
 	helpers.CheckError(err)
 	defer db.Close()
 
-	command := "INSERT INTO comments(post_id, username, content, avatar) VALUES (?, ?, ?, ?)"
+	command := "INSERT INTO comments(postId, creator, content, avatar) VALUES (?, ?, ?, ?)"
 	_, err = db.Exec(command, postID, username, content, avatar)
 	helpers.CheckError(err)
 }

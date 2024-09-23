@@ -12,7 +12,7 @@ func GetAllPosts() ([]structs.Post, error) {
 	defer db.Close()
 	var post structs.Post
 	var posts []structs.Post
-	rows, err := db.Query("SELECT id, username, title, content, avatar, createdAt FROM posts")
+	rows, err := db.Query("SELECT id, username, title, content, avatar, createdAt FROM posts ORDER BY createdAt DESC")
 	helpers.CheckError(err)
 	defer rows.Close()
 

@@ -1,9 +1,14 @@
 -- +goose Up
--- +goose StatementBegin
-SELECT 'up SQL query';
--- +goose StatementEnd
+CREATE TABLE comments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER ,
+    postId INTEGER NOT NULL,
+    creator TEXT NOT NULL,
+    content TEXT NOT NULL,
+    avatar TEXT DEFAULT "",
+    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (postId) REFERENCES posts(id) ON DELETE CASCADE
+);
 
 -- +goose Down
--- +goose StatementBegin
-SELECT 'down SQL query';
--- +goose StatementEnd
+DROP TABLE comments;
