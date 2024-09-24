@@ -5,13 +5,24 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
+
+	"main.go/backend/database/create"
 )
 
-var db *sql.DB
+var DB *sql.DB
 
-// sessionite map
+func init() {
+	var err error
+	DB, err = create.ConnectDB()
+	if err != nil {
+		log.Fatal("Failed to connect to the database:", err)
+	}
+}
+
+// mapped sessions
 var Sessions = map[string]string{}
 
 func generateSessionToken() (string, error) {
@@ -24,15 +35,29 @@ func generateSessionToken() (string, error) {
 }
 
 func SetCookies(w http.ResponseWriter, r *http.Request, username string) {
+	var sessionToken string
 
-	sessionToken, err := generateSessionToken()
+	// Does cookie excist
+	cookie, err := r.Cookie("accessToken")
 	if err != nil {
-		http.Error(w, "Unable to generate session token", http.StatusInternalServerError)
-		return
+		if err == http.ErrNoCookie {
+			//if not make new
+			sessionToken, err = generateSessionToken()
+			if err != nil {
+				http.Error(w, "Unable to generate session token", http.StatusInternalServerError)
+				return
+			}
+		} else {
+			http.Error(w, "Error retrieving cookie", http.StatusInternalServerError)
+			return
+		}
+	} else {
+		// If cookie found use it
+		sessionToken = cookie.Value
 	}
 
 	expirationTime := time.Now().Add(30 * time.Minute)
-	cookie := http.Cookie{
+	newCookie := http.Cookie{
 		Name:     "accessToken",
 		Value:    sessionToken,
 		Expires:  expirationTime,
@@ -42,17 +67,16 @@ func SetCookies(w http.ResponseWriter, r *http.Request, username string) {
 		SameSite: http.SameSiteLaxMode,
 	}
 
-	http.SetCookie(w, &cookie)
+	http.SetCookie(w, &newCookie)
 
 	expiry := time.Now().Add(30 * time.Minute)
-	_, err = db.Exec("INSERT INTO sessions (username, cookie, expiresAt) VALUES (?, ?, ?)", username, sessionToken, expiry)
-
+	_, err = DB.Exec("INSERT INTO sessions (username, cookie, expiresAt) VALUES (?, ?, ?)", username, sessionToken, expiry)
 	if err != nil {
-		http.Error(w, "Unable to store sessions", http.StatusInternalServerError)
+		http.Error(w, "Unable to store session", http.StatusInternalServerError)
 		return
 	}
-	fmt.Println("sessions and cookies", Sessions, sessionToken, username)
-	fmt.Printf("Session token is created! Token: %v for user %v\n", sessionToken, username)
+
+	fmt.Println("Session token is created or updated:", sessionToken, "for user", username)
 }
 
 func GetCookies(w http.ResponseWriter, r *http.Request) (bool, string, error) {
@@ -73,7 +97,7 @@ func GetCookies(w http.ResponseWriter, r *http.Request) (bool, string, error) {
 
 	var username string
 
-	err = db.QueryRow("SELECT username FROM sessions WHHERE cookie = ?", sessionToken).Scan(&username)
+	err = DB.QueryRow("SELECT username FROM sessions WHHERE cookie = ?", sessionToken).Scan(&username)
 	if err == sql.ErrNoRows {
 		fmt.Println("this is sessions bs 1")
 		return false, "", nil
@@ -92,7 +116,7 @@ func DeleteCookies(w http.ResponseWriter, r *http.Request) {
 	sessionToken := cookie.Value
 
 	//deleting from db
-	_, err = db.Exec("DELETE FROM sessions WHERE cookie = ?", sessionToken)
+	_, err = DB.Exec("DELETE FROM sessions WHERE cookie = ?", sessionToken)
 	if err != nil {
 		fmt.Println("Error deleting session:", err)
 		return
@@ -109,7 +133,3 @@ func DeleteCookies(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, cookie)
 }
-
-// kui ei ole siis lisa cookie
-//kui on enda ocokie ss chill
-//kui kellegi teise cookie ss kirjuta yle ylekirjutamine
