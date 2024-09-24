@@ -69,7 +69,7 @@ func SetCookies(w http.ResponseWriter, r *http.Request, username string) {
 
 	http.SetCookie(w, &newCookie)
 
-	expiry := time.Now().Add(30 * time.Minute)
+	expiry := expirationTime.Format("2006-01-02 15:04:05")
 	_, err = DB.Exec("INSERT INTO sessions (username, cookie, expiresAt) VALUES (?, ?, ?)", username, sessionToken, expiry)
 	if err != nil {
 		http.Error(w, "Unable to store session", http.StatusInternalServerError)
@@ -97,7 +97,7 @@ func GetCookies(w http.ResponseWriter, r *http.Request) (bool, string, error) {
 
 	var username string
 
-	err = DB.QueryRow("SELECT username FROM sessions WHHERE cookie = ?", sessionToken).Scan(&username)
+	err = DB.QueryRow("SELECT username FROM sessions WHERE cookie = ?", sessionToken).Scan(&username)
 	if err == sql.ErrNoRows {
 		fmt.Println("this is sessions bs 1")
 		return false, "", nil
