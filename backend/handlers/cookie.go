@@ -37,7 +37,7 @@ func generateSessionToken() (string, error) {
 func SetCookies(w http.ResponseWriter, r *http.Request, username string) {
 	var sessionToken string
 
-	// Does cookie excist
+	// Does cookie exist
 	cookie, err := r.Cookie("accessToken")
 	if err != nil {
 		if err == http.ErrNoCookie {
@@ -70,10 +70,31 @@ func SetCookies(w http.ResponseWriter, r *http.Request, username string) {
 	http.SetCookie(w, &newCookie)
 
 	expiry := expirationTime.Format("2006-01-02 15:04:05")
-	_, err = DB.Exec("INSERT INTO sessions (username, cookie, expiresAt) VALUES (?, ?, ?)", username, sessionToken, expiry)
-	if err != nil {
-		http.Error(w, "Unable to store session", http.StatusInternalServerError)
-		return
+
+	var existingSessionToken string
+
+	DB.QueryRow("SELECT cookie FROM sessions WHERE cookie = ?", sessionToken).Scan(&existingSessionToken)
+
+	if err == sql.ErrNoRows {
+		_, err = DB.Exec("INSERT INTO sessions (username, cookie, expiresAt) VALUES (?, ?, ?)", username, sessionToken, expiry)
+		if err != nil {
+			fmt.Println("Error inserting new session:", err)
+			return
+		}
+	} else {
+		// Existing session found, delete it first
+		_, err = DB.Exec("DELETE FROM sessions WHERE cookie = ?", existingSessionToken)
+		if err != nil {
+			fmt.Println("Error deleting existing session:", err)
+			return
+		}
+
+		_, err = DB.Exec("INSERT INTO sessions (username, cookie, expiresAt) VALUES (?, ?, ?)", username, sessionToken, expiry)
+		if err != nil {
+			fmt.Println("error thingy", err, "Error thingy back")
+			return
+		}
+
 	}
 
 	fmt.Println("Session token is created or updated:", sessionToken, "for user", username)
@@ -133,3 +154,6 @@ func DeleteCookies(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, cookie)
 }
+
+//kas eelnev sesioon on sellele usenamile tehutd
+//kui on kustuta databasist eelnev ja lisa uus ja kui ole siis ka v6ta databasist ja lisa uus

@@ -11,21 +11,27 @@ function Postlist({refreshTrigger}) {
 
     // Fetch posts from the backend
 
-   const fetchPosts = async () => {
+    const fetchPosts = async () => {
         try {
-            const response = await fetch('http://localhost:8081/getposts'); // Assuming you have an API endpoint for posts
-            const data = await response.json();
-            console.log(data)
-            setPosts(data); 
-            console.log(data)
-
+            const response = await fetch('http://localhost:8081/getposts');
+            const postsData = await response.json();
+            
+            const postsWithComments = await Promise.all(postsData.map(async (post) => {
+                const comments = await fetchCommentsForPost(post.id);
+                return { ...post, comments };
+            }));
+    
+            setPosts(postsWithComments);
+    
         } catch (error) {
             console.error("Error fetching posts:", error);
         }
     };
 
+
     const handleCommentSubmit = async (content, postId) => {
         console.log("IN COMMENT", content)
+        console.log("IN COMMENT", postId)
         let form = new FormData
         form.append('content', content)
         form.append('postId', postId)
@@ -37,7 +43,6 @@ function Postlist({refreshTrigger}) {
             });
             if (response.ok) {
                 console.log('Comment submitted:', content);
-                fetchPosts()
             } else {
                 console.error('Failed to submit comment');
             }
@@ -53,16 +58,28 @@ function Postlist({refreshTrigger}) {
             {posts.length > 0 ? (
                 <ul>
                     {posts.map((post) => (
-                        <li key={post.ID  ? post.ID : 99}>
+                        <li key={post.id}>
                             
-                            <h3>{post.Title}</h3>
-                            <p>{post.Content}</p>
-                            {post.Avatar.length > 0 && <img src={`http://localhost:8081/utils/avatar/${post.Avatar}`} alt="picture" />}
+                            <h3>{post.title}</h3>
+                            <p>{post.content}</p>
+
+                            {post.avatar && post.avatar.length > 0 && ( <img src={`http://localhost:8081/utils/avatar/${post.Avatar}`} alt="picture" />)}
+
+                            
                             <p>{post.Username}</p>
 
 
-                             <CreateComment onCommentSubmit={(comment) => handleCommentSubmit(comment, post.ID)} />
+                             <CreateComment onCommentSubmit={(comment) => handleCommentSubmit(comment, post.id)} />
 
+                             {post.comments && post.comments.length > 0 && (
+                                <ul>
+                                    {post.comments.map((comment) => (
+                                        <li key={comment.id}>
+                                            <p>{comment.username}: {comment.content}</p>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </li>
                     ))}
                 </ul>
@@ -72,5 +89,6 @@ function Postlist({refreshTrigger}) {
         </div>
     );
 }
+
 
 export default Postlist;

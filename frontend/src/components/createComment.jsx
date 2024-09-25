@@ -8,7 +8,7 @@ const CreateComment = ({onCommentSubmit}) => {
         e.preventDefault();
         if(comment.trim()){
             onCommentSubmit(comment)
-            setComment('')
+            setComment('');
         }else{
             alert('Please enter comment')
         }
@@ -29,5 +29,4 @@ const CreateComment = ({onCommentSubmit}) => {
     </div>
   )
 }
-
 export default CreateComment

@@ -1,30 +1,33 @@
 import React, { useState } from 'react';
 import  setupWebSocket  from "../components/websocket.jsx";
 
-    const Login = ({onLogin}) => {
-        const [formData, setFormData] = useState({
-            usernameOrEmail: '',
-            password: '',
-        })
+const Login = ({onLogin}) => {
+    const [loginData, setLoginData] = useState({
+        usernameOrEmail: '',
+        password: '',
+    })
     
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
+        setLoginData({
+            ...loginData,
             [name]: value,
         });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form submitted:", formData);
+        console.log("Form submitted:", loginData);
 
         try {
+            console.log(JSON.stringify(loginData))
             const response = await fetch("http://localhost:8081/login", {
                 method: 'POST',
                 credentials:'include',
-                body:JSON.stringify(formData),
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(loginData)
             });
+            console.log(response)
 
             if (!response.ok) {
                 const errorText = await response.text();
@@ -33,9 +36,7 @@ import  setupWebSocket  from "../components/websocket.jsx";
 
             setupWebSocket();
             onLogin();
-            const result = await response.text();
 
-            console.log('Login successful:', formData);
         } catch (error) {
             console.error('Error submitting form:', error);
         }
@@ -50,7 +51,7 @@ import  setupWebSocket  from "../components/websocket.jsx";
                     <input
                     type='text'
                     name='usernameOrEmail'
-                    value={formData.usernameOrEmail}
+                    value={loginData.usernameOrEmail}
                     onChange={handleChange}
                     required
                     />
@@ -60,7 +61,7 @@ import  setupWebSocket  from "../components/websocket.jsx";
                     <input
                     type='password'
                     name='password'
-                    value={formData.password}
+                    value={loginData.password}
                     onChange={handleChange}
                     required
                     />

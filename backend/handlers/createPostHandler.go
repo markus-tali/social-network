@@ -38,6 +38,7 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("Post title is: ", postTitle, "Post content is: ", postText)
+	fmt.Println("username for post", username)
 
 	set.InsertPost(username, postTitle, postText, avatarPath)
 	w.WriteHeader(http.StatusOK)

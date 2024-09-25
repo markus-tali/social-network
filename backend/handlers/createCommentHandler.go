@@ -16,6 +16,7 @@ func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		helpers.CheckError(err)
 	}
+	fmt.Println("username string is here:", username)
 
 	// Parse the multipart form data (because of avatar files)
 	err = r.ParseMultipartForm(10 << 20) // Limit your file size (e.g., 10MB)

@@ -25,8 +25,10 @@ func CorsEnabler(w http.ResponseWriter, r *http.Request) {
 	// Always respond to preflight requests (OPTIONS)
 	if r.Method == "OPTIONS" {
 		// Allow all origins in preflight requests to avoid blocking
+		w.Header().Set("Access-Control-Allow-Origin", origin)
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.WriteHeader(http.StatusOK)
 		return
 	}

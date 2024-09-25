@@ -11,20 +11,21 @@ import (
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	CorsEnabler(w, r)
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
+
+	var loginData struct {
+		Username string `json:"usernameOrEmail"`
+		Password string `json:"password"`
 	}
-	var loginData map[string]string
 
 	err := json.NewDecoder(r.Body).Decode(&loginData)
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	usernameOrEmail := loginData["usernameOrEmail"]
-	password := loginData["password"]
+	usernameOrEmail := loginData.Username
+	password := loginData.Password
 
 	user, err := get.GetUserByUsernameOrEmail(usernameOrEmail)
 	if err != nil || user == nil {

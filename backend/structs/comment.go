@@ -1,7 +1,7 @@
 package structs
 
 type Comment struct {
-	Id        string `json:"id"`
+	ID        string `json:"id"`
 	PostId    string `json:"postId"`
 	Username  string `json:"username"`
 	Content   string `json:"content"`

@@ -1,4 +1,5 @@
 -- +goose Up
+
 CREATE TABLE IF NOT EXISTS sessions (
     username TEXT PRIMARY KEY NOT NULL,
     cookie TEXT NOT NULL,

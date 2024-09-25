@@ -1,10 +1,11 @@
 package structs
 
 type Post struct {
-	ID        string
-	Username  string
-	Title     string
-	Content   string
-	Avatar    string
-	CreatedAt string
+	ID        string    `json:"id"`
+	Username  string    `json:"username"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	Avatar    string    `json:"avatar"`
+	CreatedAt string    `json:"createdAt"`
+	Comment   []Comment `json:"comments"`
 }
