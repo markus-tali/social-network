@@ -18,12 +18,12 @@ func GetAllComments() ([]structs.Comment, error) {
 	var comment structs.Comment
 	var comments []structs.Comment
 
-	rows, err := db.Query("SELECT id, postId, username, content, comment, avatar, createdAt FROM comments ORDER BY createdAt DESC")
+	rows, err := db.Query("SELECT id, postId, username, content,  avatar, createdAt FROM comments ORDER BY createdAt DESC")
 	helpers.CheckError(err)
 	defer rows.Close()
 
 	for rows.Next() {
-		err := rows.Scan(&comment.ID, &comment.PostId, &comment.Username, &comment.Content, &comment.Comment, &comment.Avatar, &comment.CreatedAt)
+		err := rows.Scan(&comment.ID, &comment.PostId, &comment.Username, &comment.Content, &comment.Avatar, &comment.CreatedAt)
 		if err != nil {
 			return nil, err
 		}

@@ -3,10 +3,12 @@ import CreateComment from './createComment';
 
 function Postlist({refreshTrigger}) {
     const [posts, setPosts] = useState([]);
+    const [comments, setComments] = useState([])
 
     // Fetch posts when the component loads
     useEffect(() => {
         fetchPosts();
+        fetchComments()
     }, [refreshTrigger]);
 
     // Fetch posts from the backend
@@ -15,18 +17,32 @@ function Postlist({refreshTrigger}) {
         try {
             const response = await fetch('http://localhost:8081/getposts');
             const postsData = await response.json();
-            
-            const postsWithComments = await Promise.all(postsData.map(async (post) => {
-                const comments = await fetchCommentsForPost(post.id);
-                return { ...post, comments };
-            }));
+            console.log(postsData)
+            setPosts(postsData)
+           
     
-            setPosts(postsWithComments);
     
         } catch (error) {
             console.error("Error fetching posts:", error);
         }
     };
+    const fetchComments = async () => {
+        try {
+            const response = await fetch('http://localhost:8081/getcomments',{
+                method: 'GET',
+                credentials: 'include'
+            });
+            const commentData = await response.json();
+            console.log("this is ocmmentdata",commentData)
+            setComments(commentData)
+           
+    
+    
+        } catch (error) {
+            console.error("Error fetching posts:", error);
+        }
+    };
+
 
 
     const handleCommentSubmit = async (content, postId) => {
@@ -63,23 +79,29 @@ function Postlist({refreshTrigger}) {
                             <h3>{post.title}</h3>
                             <p>{post.content}</p>
 
-                            {post.avatar && post.avatar.length > 0 && ( <img src={`http://localhost:8081/utils/avatar/${post.Avatar}`} alt="picture" />)}
+                            {post.avatar && post.avatar.length > 0 && ( <img src={`http://localhost:8081/utils/avatar/${post.avatar}`} alt="picture" />)}
 
                             
-                            <p>{post.Username}</p>
+                            <p>{post.username}</p>
+                        <ul>
+                            {comments.map((comment, index) =>(
+                                <>
+                                {comment.postId === post.id && (
+                                    <li key={index}>
+                                    <p>{comment.username}:</p>
+                                    <p>{comment.content}</p>
+                                    <p>{comment.createdAt}</p>
+                                    </li>
+                                )}
+                                </>
+                            )
+                        )}
+                        </ul>
 
 
                              <CreateComment onCommentSubmit={(comment) => handleCommentSubmit(comment, post.id)} />
 
-                             {post.comments && post.comments.length > 0 && (
-                                <ul>
-                                    {post.comments.map((comment) => (
-                                        <li key={comment.id}>
-                                            <p>{comment.username}: {comment.content}</p>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
+                            
                         </li>
                     ))}
                 </ul>

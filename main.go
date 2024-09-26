@@ -17,7 +17,7 @@ func main() {
 	http.HandleFunc("/session", handlers.SessionHandler)
 	http.HandleFunc("/createpost", handlers.CreatePostHandler)
 	http.HandleFunc("/createcomment", handlers.CreateCommentHandler)
-	http.HandleFunc("/getcomment", handlers.GetCommentHandler)
+	http.HandleFunc("/getcomments", handlers.GetCommentHandler)
 	http.HandleFunc("/utils/avatar/", utils.ServeAvatar)
 	http.HandleFunc("/getposts", handlers.GetPostsHandler)
 

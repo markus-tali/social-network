@@ -11,9 +11,10 @@ import (
 )
 
 func GetCommentHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("WWWWWWWWWWWWWWWWWWWWWWWWWWWW")
+	fmt.Println(r.Method, "here at getcomment")
 	CorsEnabler(w, r)
 	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
 		return
 	}
 	comments, err := get.GetAllComments()
@@ -26,5 +27,4 @@ func GetCommentHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error marshaling callback in GetAllPostsHandler")
 	}
 	w.Write(jsonData)
-
 }

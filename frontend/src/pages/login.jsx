@@ -33,7 +33,7 @@ const Login = ({onLogin}) => {
                 const errorText = await response.text();
                 throw new Error(errorText || 'Network response was not ok');
             }
-
+     
             setupWebSocket();
             onLogin();
 

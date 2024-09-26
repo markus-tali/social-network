@@ -11,6 +11,9 @@ import (
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	CorsEnabler(w, r)
+	if r.Method != "POST" {
+		return
+	}
 
 	var loginData struct {
 		Username string `json:"usernameOrEmail"`
@@ -29,12 +32,14 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	user, err := get.GetUserByUsernameOrEmail(usernameOrEmail)
 	if err != nil || user == nil {
+		fmt.Println("error get user by nameoremail")
 		http.Error(w, "Username or email does not exist", http.StatusForbidden)
 		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
+		fmt.Println("error compare pass")
 		http.Error(w, "Incorrect password", http.StatusUnauthorized)
 		return
 	}
@@ -44,5 +49,4 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	SetCookies(w, r, user.Username)
 	c, _ := r.Cookie("accessToken")
 	fmt.Println("login cookie", c)
-
 }
