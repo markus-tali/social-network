@@ -14,6 +14,6 @@ func InsertComment(postID, username, content, avatar string) {
 
 	command := "INSERT INTO comments(postId, username, content, avatar) VALUES (?, ?, ?, ?)"
 	_, err = db.Exec(command, postID, username, content, avatar)
-	fmt.Println("This is the checking:", postID, username, content)
+	fmt.Println("This is the checking:", postID, username, content, avatar)
 	helpers.CheckError(err)
 }

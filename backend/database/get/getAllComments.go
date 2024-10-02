@@ -1,8 +1,6 @@
 package get
 
 import (
-	"fmt"
-
 	"main.go/backend/database/create"
 	"main.go/backend/helpers"
 	"main.go/backend/structs"
@@ -29,7 +27,6 @@ func GetAllComments() ([]structs.Comment, error) {
 		}
 		comments = append(comments, comment)
 		helpers.CheckError(err)
-		fmt.Println("comments:", comments, comment)
 
 	}
 	return comments, nil
