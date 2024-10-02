@@ -1,11 +1,13 @@
 package handlers
 
-import "net/http"
+import (
+	"encoding/json"
+	"net/http"
+)
 
 func SessionHandler(w http.ResponseWriter, r *http.Request) {
 	CorsEnabler(w, r)
 	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
 		return
 	}
 
@@ -15,5 +17,12 @@ func SessionHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte("User is logged in: " + username))
+	// w.Write([]byte("User is logged in: " + username))
+	response := map[string]interface{}{
+		"isLoggedIn": true,
+		"username":   username,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }

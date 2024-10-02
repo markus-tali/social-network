@@ -3,6 +3,7 @@ import Header from '../components/header.jsx';
 import Footer from "../components/footer.jsx";
 import PostCreation from '../components/content.jsx';
 import Postlist from '../components/postlist.jsx';
+import RightSidenav from '../components/rightsidenav.jsx';
 
  function Mainpage({onLogout} ) {
     const [isCreatingPost, setIsCreatingPost] = useState(false)
@@ -22,7 +23,11 @@ import Postlist from '../components/postlist.jsx';
         handlePostCreated={handlePostCreated}
             />
             <Postlist refreshTrigger={shouldRefreshPosts}/>
-            
+
+            <div className="right-sidebar" style={{ flex: 1 }}>
+                    <RightSidenav />
+                </div>
+
             <Footer />
         </div>
     );

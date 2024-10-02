@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import  Register from "./pages/register.jsx";
 import Login  from "./pages/login.jsx";
 import  Mainpage  from "./pages/mainpage.jsx";
@@ -8,19 +8,29 @@ const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showLogin, setShowLogin] = useState(true);
 
-    // const getCookie = (name) => {
-    //     const value = `; ${document.cookie}`;
-    //     const parts = value.split(`; ${name}=`);
-    //     if (parts.length === 2) return parts.pop().split(';').shift();
-    // };
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const response = await fetch('http://localhost:8081/session', {
+                    method: 'GET',
+                    credentials: 'include',  // Selle abil saadetakse ka küpsised
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.isLoggedIn) {
+                        setIsLoggedIn(true);  // Kui sessioon eksisteerib, logime kasutaja sisse
+                    } else {
+                        console.error('Session invalid or not found')
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking session:', error);
+            }
+        };
 
-    // useEffect(() => {
-    //     const accessToken = getCookie('accessToken');  // Assuming your login cookie is called 'isLoggedIn'
-    //     console.log(accessToken, "cookiez")
-    //     if (accessToken) {
-    //         setIsLoggedIn(true);
-    //     }
-    // }, []);
+        checkSession();
+    }, []);
 
     const handleLogin = () => {
         setIsLoggedIn(true);

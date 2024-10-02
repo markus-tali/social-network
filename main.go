@@ -20,6 +20,7 @@ func main() {
 	http.HandleFunc("/getcomments", handlers.GetCommentHandler)
 	http.HandleFunc("/utils/avatar/", utils.ServeAvatar)
 	http.HandleFunc("/getposts", handlers.GetPostsHandler)
+	http.HandleFunc("/getusers", handlers.GetUsersHandler)
 
 	fmt.Println("Backend server is running")
 

@@ -93,23 +93,24 @@ function Postlist({refreshTrigger}) {
 
                             
                             <p>{post.username}</p>
+
                             <ul>
-  {comments.map((comment) => (
-    comment.postId === post.id && (
-      <li key={comment.id}>
-        <p>{comment.username} comment:</p>
-        <p>{comment.content}</p>
-        <p>{comment.createdAt}</p>
-        {comment.avatar && comment.avatar.length > 0 && (
-          <img
-            src={`http://localhost:8081/utils/avatar/${comment.avatar}`}
-            alt="comment picture"
-          />
-        )}
-      </li>
-    )
-  ))}
-</ul>
+                                {comments.map((comment) => (
+                                comment.postId === post.id && (
+                                <li key={comment.id}>
+                                    <p>{comment.username} comment:</p>
+                                    <p>{comment.content}</p>
+                                    <p>{comment.createdAt}</p>
+                                    {comment.avatar && comment.avatar.length > 0 && (
+                                    <img
+                                        src={`http://localhost:8081/utils/avatar/${comment.avatar}`}
+                                        alt="comment picture"
+                                    />
+                                    )}
+                                </li>
+                                )
+                            ))}
+                            </ul>
 
 
 

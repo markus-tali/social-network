@@ -57,6 +57,7 @@ func SetCookies(w http.ResponseWriter, r *http.Request, username string) {
 	}
 
 	expirationTime := time.Now().Add(30 * time.Minute)
+
 	newCookie := http.Cookie{
 		Name:     "accessToken",
 		Value:    sessionToken,
@@ -68,6 +69,8 @@ func SetCookies(w http.ResponseWriter, r *http.Request, username string) {
 	}
 
 	http.SetCookie(w, &newCookie)
+
+	fmt.Println("Set cookie:", newCookie)
 
 	expiry := expirationTime.Format("2006-01-02 15:04:05")
 
@@ -97,7 +100,10 @@ func SetCookies(w http.ResponseWriter, r *http.Request, username string) {
 
 	}
 
+	Sessions[sessionToken] = username
+
 	fmt.Println("Session token is created or updated:", sessionToken, "for user", username)
+
 }
 
 func GetCookies(w http.ResponseWriter, r *http.Request) (bool, string, error) {
@@ -148,7 +154,7 @@ func DeleteCookies(w http.ResponseWriter, r *http.Request) {
 		Name:     "accessToken",
 		Value:    "",
 		MaxAge:   -1,
-		Secure:   true,
+		Secure:   false,
 		HttpOnly: false,
 		SameSite: http.SameSiteLaxMode,
 	}
