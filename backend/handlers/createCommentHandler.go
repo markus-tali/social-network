@@ -6,14 +6,19 @@ import (
 
 	"main.go/backend/database/set"
 	"main.go/backend/helpers"
+	"main.go/backend/utils"
 )
 
 func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 	CorsEnabler(w, r)
+	if r.Method == "OPTIONS" {
+		return
+	}
 
 	_, username, err := GetCookies(w, r)
 	if err != nil {
+		fmt.Println("this is the error:", err)
 		helpers.CheckError(err)
 	}
 	fmt.Println("username string is here:", username)
@@ -31,16 +36,19 @@ func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("gotem:", content, postId)
 
 	// //read avatar formvalue
-	// avatarPath := utils.GetAvatars(username, w, r)
+	avatarPath := utils.GetAvatars(username, w, r)
 
-	// if avatarPath == "" {
-	// 	fmt.Println("No avatar uploaded")
-	// } else {
-	// 	fmt.Println("Avatar uploaded at:", avatarPath)
-	// }
+	if avatarPath == "" {
+		fmt.Println("No avatar uploaded")
+	} else {
+		fmt.Println("Avatar uploaded at:", avatarPath)
+	}
 
 	fmt.Println("Comment is: ", content)
-	set.InsertComment(postId, username, content, "")
+
+	fmt.Println("postId, username, content, avatar Path:", postId, username, content, avatarPath)
+
+	set.InsertComment(postId, username, content, avatarPath)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Data received successfully"))
 }

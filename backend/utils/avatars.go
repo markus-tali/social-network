@@ -41,7 +41,7 @@ func GetAvatars(username string, w http.ResponseWriter, r *http.Request) string 
 	file, fileHeader, err := r.FormFile("avatar")
 	if err != nil {
 		fmt.Println("Error retrieving the file:", err)
-		fmt.Println("here at aatar")
+		fmt.Println("here at avatar")
 		return ""
 	}
 

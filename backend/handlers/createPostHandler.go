@@ -12,9 +12,12 @@ import (
 func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	CorsEnabler(w, r)
-
+	if r.Method == "OPTIONS" {
+		return
+	}
 	_, username, err := GetCookies(w, r)
 	helpers.CheckError(err)
+	fmt.Println("username in createpost:", username)
 
 	// Parse the multipart form data (because of avatar files)
 	err = r.ParseMultipartForm(10 << 20) // Limit your file size (e.g., 10MB)

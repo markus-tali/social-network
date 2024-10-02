@@ -11,16 +11,15 @@ import (
 )
 
 func GetCommentHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("WWWWWWWWWWWWWWWWWWWWWWWWWWWW")
-	fmt.Println(r.Method, "here at getcomment")
 	CorsEnabler(w, r)
 	if r.Method == "OPTIONS" {
 		return
 	}
+
 	comments, err := get.GetAllComments()
 	helpers.CheckError(err)
 	if comments == nil {
-		comments = []structs.Comment{} // Replace `Post` with your actual post struct type
+		comments = []structs.Comment{}
 	}
 	jsonData, err := json.Marshal(comments)
 	if err != nil {

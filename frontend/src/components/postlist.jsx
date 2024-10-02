@@ -33,7 +33,9 @@ function Postlist({refreshTrigger}) {
                 credentials: 'include'
             });
             const commentData = await response.json();
-            console.log("this is ocmmentdata",commentData)
+            console.log('I am here!')
+            commentData.forEach(comment => console.log("foreach", comment.id))
+            console.log("this is commentdata",commentData)
             setComments(commentData)
            
     
@@ -45,12 +47,20 @@ function Postlist({refreshTrigger}) {
 
 
 
-    const handleCommentSubmit = async (content, postId) => {
+    const handleCommentSubmit = async (content, postId, avatar) => {
         console.log("IN COMMENT", content)
-        console.log("IN COMMENT", postId)
+        console.log("IN COMMENT AVATAR:", avatar)
         let form = new FormData
         form.append('content', content)
         form.append('postId', postId)
+        form.append('avatar', avatar)
+        console.log("postid frrom postlist:", postId)
+        console.log('THis is avatar', avatar)
+        if(avatar){
+            form.append('avatar',  avatar)
+        }
+        console.log("avatar:", avatar)
+
         try {
             const response = await fetch(`http://localhost:8081/createcomment`, {
                 method: 'POST',
@@ -83,23 +93,27 @@ function Postlist({refreshTrigger}) {
 
                             
                             <p>{post.username}</p>
-                        <ul>
-                            {comments.map((comment, index) =>(
-                                <>
-                                {comment.postId === post.id && (
-                                    <li key={index}>
-                                    <p>{comment.username}:</p>
-                                    <p>{comment.content}</p>
-                                    <p>{comment.createdAt}</p>
-                                    </li>
-                                )}
-                                </>
-                            )
-                        )}
-                        </ul>
+                            <ul>
+  {comments.map((comment) => (
+    comment.postId === post.id && (
+      <li key={comment.id}>
+        <p>{comment.username} comment:</p>
+        <p>{comment.content}</p>
+        <p>{comment.createdAt}</p>
+        {comment.avatar && comment.avatar.length > 0 && (
+          <img
+            src={`http://localhost:8081/utils/avatar/${comment.avatar}`}
+            alt="comment picture"
+          />
+        )}
+      </li>
+    )
+  ))}
+</ul>
 
 
-                             <CreateComment onCommentSubmit={(comment) => handleCommentSubmit(comment, post.id)} />
+
+                             <CreateComment onCommentSubmit={(comment,avatar) => handleCommentSubmit(comment,post.id, avatar)} />
 
                             
                         </li>
