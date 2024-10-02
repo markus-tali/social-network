@@ -11,8 +11,9 @@ import RightSidenav from '../components/rightsidenav.jsx';
 
 
     const handlePostCreated = () => {
+        console.log("Refreshing posts...")
         setIsCreatingPost(false)
-        setShouldRefreshPosts(!shouldRefreshPosts);
+        setShouldRefreshPosts(prev => !prev);
     }
 
     return (
@@ -21,6 +22,7 @@ import RightSidenav from '../components/rightsidenav.jsx';
           <PostCreation
         isCreatingPost={isCreatingPost}
         handlePostCreated={handlePostCreated}
+        fetchPosts={handlePostCreated}
             />
             <Postlist refreshTrigger={shouldRefreshPosts}/>
 

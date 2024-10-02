@@ -15,7 +15,7 @@ function CreatePost({ onPostCreated }){
         formData.append('title', postTitle)
         formData.append('content', postContent)
         if (selectedFile){
-            formData.append('avatar', selectedFile)
+        formData.append('avatar', selectedFile)
         }
         try {
             const response = await fetch('http://localhost:8081/createpost', {
@@ -27,6 +27,7 @@ function CreatePost({ onPostCreated }){
             if (response.ok) {
                 const createdPost = await response.text()
                 console.log('Post created: ', createdPost)
+                onPostCreated()
 
             } else {
                 console.error('Failed to create post')

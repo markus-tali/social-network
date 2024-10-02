@@ -2,7 +2,7 @@ import React from 'react';
 import Postlist from './postlist.jsx';
 import CreatePost from '../pages/createpost.jsx';
 
-function PostCreation ({ isCreatingPost, handlePostCreated, fetchPosts}){
+function PostCreation ({ isCreatingPost, handlePostCreated}){
   return(
 <main className='content'>
 {!isCreatingPost ? (
@@ -11,7 +11,6 @@ function PostCreation ({ isCreatingPost, handlePostCreated, fetchPosts}){
   <CreatePost
   onPostCreated={() => {
     handlePostCreated(); // Call parent method after post creation
-    fetchPosts();        // Refresh posts
   }}
 />
 )}

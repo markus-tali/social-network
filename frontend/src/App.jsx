@@ -8,18 +8,20 @@ const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showLogin, setShowLogin] = useState(true);
 
+
+    //checks sessions
     useEffect(() => {
         const checkSession = async () => {
             try {
                 const response = await fetch('http://localhost:8081/session', {
                     method: 'GET',
-                    credentials: 'include',  // Selle abil saadetakse ka küpsised
+                    credentials: 'include',  
                 });
                 
                 if (response.ok) {
                     const data = await response.json();
                     if (data.isLoggedIn) {
-                        setIsLoggedIn(true);  // Kui sessioon eksisteerib, logime kasutaja sisse
+                        setIsLoggedIn(true); 
                     } else {
                         console.error('Session invalid or not found')
                     }

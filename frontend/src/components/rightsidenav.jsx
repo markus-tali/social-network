@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 function RightSidenav() {
 
     const [users, setUsers] = useState([]);
+    const [selectedUser, setSelectedUser] = useState(null)
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -20,6 +21,14 @@ function RightSidenav() {
         fetchUsers();
     }, [])
 
+    const handleUserClick = (user) => {
+        setSelectedUser(user)
+    }
+
+    const handleCloseChat = () => {
+        setSelectedUser(null)
+    }
+
 
   return (
         <div className='users'>
@@ -28,12 +37,25 @@ function RightSidenav() {
             <ul>
                 {users.length > 0 ? (
                     users.map((user) => (
-                        <li key={user.Id}>{user.username}</li>
+                        <li key={user.Id}>
+                              <button onClick={() => handleUserClick(user)}>
+                                    {user.username}
+                              </button>
+                            </li>
                     ))
                 ):(
                     <li>No users found</li>
                 )}
             </ul>
+            {selectedUser && (
+                <div className='chatWindow'>
+                    <h3>{selectedUser.username}</h3>
+                    <div className='chatContent'>
+                        <p>Chat content</p>
+                    </div>
+                <button onClick={handleCloseChat}>Close chat</button>
+                </div>
+            )}
     
 
         </div>

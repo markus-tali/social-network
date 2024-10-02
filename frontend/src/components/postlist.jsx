@@ -7,6 +7,7 @@ function Postlist({refreshTrigger}) {
 
     // Fetch posts when the component loads
     useEffect(() => {
+        console.log("Fetching posts and comments...");
         fetchPosts();
         fetchComments()
     }, [refreshTrigger]);
@@ -16,6 +17,7 @@ function Postlist({refreshTrigger}) {
     const fetchPosts = async () => {
         try {
             const response = await fetch('http://localhost:8081/getposts');
+            if (!response.ok) throw new Error("Failed to fetch posts");
             const postsData = await response.json();
             console.log(postsData)
             setPosts(postsData)
