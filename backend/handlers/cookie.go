@@ -56,21 +56,19 @@ func SetCookies(w http.ResponseWriter, r *http.Request, username string) {
 		sessionToken = cookie.Value
 	}
 
-	expirationTime := time.Now().Add(30 * time.Minute)
+	expirationTime := time.Now().Add(3000 * time.Minute)
 
 	newCookie := http.Cookie{
 		Name:     "accessToken",
 		Value:    sessionToken,
 		Expires:  expirationTime,
-		MaxAge:   1800,
+		MaxAge:   180000,
 		Secure:   false,
 		HttpOnly: false,
 		SameSite: http.SameSiteLaxMode,
 	}
 
 	http.SetCookie(w, &newCookie)
-
-	fmt.Println("Set cookie:", newCookie)
 
 	expiry := expirationTime.Format("2006-01-02 15:04:05")
 

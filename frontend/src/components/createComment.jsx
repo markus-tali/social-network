@@ -1,6 +1,6 @@
 import React, {useState, } from 'react';
 
-const CreateComment = ({onCommentSubmit}) => {
+const CreateComment = ({onCommentSubmit, fetchComments}) => {
 
     const [comment, setComment] = useState('');
     const [avatar, setavatar] = useState(null);

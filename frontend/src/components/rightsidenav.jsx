@@ -1,65 +1,93 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import MessageInput from "./chatBox";
 
-function RightSidenav() {
-
+function RightSidenav({fromUsername}) {
     const [users, setUsers] = useState([]);
-    const [selectedUser, setSelectedUser] = useState(null)
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [messages, setMessages] = useState([]); 
+
 
     useEffect(() => {
         const fetchUsers = async () => {
-            try{
+            try {
                 const response = await fetch('http://localhost:8081/getusers', {
                     method: 'GET',
-                    credentials: 'include'
+                    credentials: 'include',
                 });
                 const data = await response.json();
-                setUsers(data)
-            }catch(error){
-                console.log(error)
+                console.log("Fetched users: ", data);
+                if (data.users) {
+                    setUsers(data.users);
+                } else {
+                    console.log('No users found');
+                }
+            } catch (error) {
+                console.log(error);
             }
-        }
+        };
         fetchUsers();
-    }, [])
+    }, []); // Removed socket setup
 
     const handleUserClick = (user) => {
-        setSelectedUser(user)
-    }
+        setSelectedUser(user);
+        setMessages([])
+    };
 
     const handleCloseChat = () => {
-        setSelectedUser(null)
-    }
+        setSelectedUser(null);
+        setMessages([])
+    };
 
+    const handleSendMessage = (messageContent) => {
+        if (!selectedUser) return;
 
-  return (
+        const newMessage = {
+            From: fromUsername,
+            Message: messageContent,
+            Date: new Date().toLocaleString(),
+        };
+
+        setMessages((prevMessages) => [...prevMessages, newMessage]); // Append the new message
+
+    };
+
+    return (
         <div className='users'>
             <h2>Userlist:</h2>
-
             <ul>
                 {users.length > 0 ? (
                     users.map((user) => (
                         <li key={user.Id}>
-                              <button onClick={() => handleUserClick(user)}>
-                                    {user.username}
-                              </button>
-                            </li>
+                            <button onClick={() => handleUserClick(user)}>
+                                {user.username}
+                            </button>
+                        </li>
                     ))
-                ):(
+                ) : (
                     <li>No users found</li>
                 )}
             </ul>
+         
             {selectedUser && (
                 <div className='chatWindow'>
-                    <h3>{selectedUser.username}</h3>
-                    <div className='chatContent'>
-                        <p>Chat content</p>
+                    <h3>Chat with {selectedUser.username}</h3>
+                    <div
+                        className='messageDisplay'
+                        style={{ border: '1px solid black', height: '200px', overflowY: 'scroll' }}
+                    >
+                        {messages.map((msg, index) => (
+                            <div key={index}>
+                                <strong>{msg.From}</strong>: {msg.Message} ({msg.Date})
+                            </div>
+                        ))}
                     </div>
-                <button onClick={handleCloseChat}>Close chat</button>
+                    <MessageInput onSendMessage={handleSendMessage} />
+                    <button onClick={handleCloseChat}>Close chat</button>
                 </div>
             )}
-    
-
         </div>
-      
-  )
+    );
 }
-export default RightSidenav
+
+
+export default RightSidenav;

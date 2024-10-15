@@ -1,5 +1,5 @@
 let socket;
-function setupWebSocket() {
+export function setupWebSocket() {
   if (socket && socket.readyState === WebSocket.OPEN) {
     return; // Prevent setting up a new WebSocket connection if one already exists
   }
@@ -21,4 +21,14 @@ function setupWebSocket() {
   });
   return socket;
 }
+
+export function sendMessage(message) {
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.send(message);
+    console.log("Made it here twice")
+  } else {
+    console.error("WebSocket is not open. Ready state:", socket.readyState);
+  }
+}
+
 export default setupWebSocket

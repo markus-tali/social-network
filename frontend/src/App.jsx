@@ -7,6 +7,7 @@ import  ToggleButton  from "./components/toggleButton.jsx";
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showLogin, setShowLogin] = useState(true);
+    const [username, setUsername] = useState(null)
 
 
     //checks sessions
@@ -22,6 +23,7 @@ const App = () => {
                     const data = await response.json();
                     if (data.isLoggedIn) {
                         setIsLoggedIn(true); 
+                        setUsername(data.username)
                     } else {
                         console.error('Session invalid or not found')
                     }
@@ -36,11 +38,13 @@ const App = () => {
 
     const handleLogin = () => {
         setIsLoggedIn(true);
+        setUsername(username)
         localStorage.setItem('isLoggedIn', 'true');
     };
 
     const handleLogout = () => {
         setIsLoggedIn(false)
+        setUsername(null)
         localStorage.removeItem('isLoggedIn')
     }
     const handleToggle = () => {
@@ -59,7 +63,7 @@ const App = () => {
                     <ToggleButton showLogin={showLogin} onToggle={handleToggle} /> 
                 </>
             ) : (
-                <Mainpage  onLogout={handleLogout} />
+                <Mainpage  onLogout={handleLogout} currentUsername={username} />
             )}
             {isLoggedIn}
         </>

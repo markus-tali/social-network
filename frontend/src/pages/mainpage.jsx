@@ -5,7 +5,7 @@ import PostCreation from '../components/content.jsx';
 import Postlist from '../components/postlist.jsx';
 import RightSidenav from '../components/rightsidenav.jsx';
 
- function Mainpage({onLogout} ) {
+ function Mainpage({onLogout, currentUsername} ) {
     const [isCreatingPost, setIsCreatingPost] = useState(false)
     const [shouldRefreshPosts, setShouldRefreshPosts] = useState(false)
 
@@ -27,7 +27,7 @@ import RightSidenav from '../components/rightsidenav.jsx';
             <Postlist refreshTrigger={shouldRefreshPosts}/>
 
             <div className="right-sidebar" style={{ flex: 1 }}>
-                    <RightSidenav />
+                    <RightSidenav fromUsername={currentUsername}/>
                 </div>
 
             <Footer />

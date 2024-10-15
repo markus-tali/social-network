@@ -2,10 +2,12 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"main.go/backend/database/get"
 	"main.go/backend/helpers"
+	"main.go/backend/structs"
 )
 
 func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
@@ -14,18 +16,30 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, _, err := GetCookies(w, r)
+	type ResponseData struct {
+		Username string         `json:"username"`
+		Users    []structs.User `json:"users"`
+	}
+
+	_, username, err := GetCookies(w, r)
 
 	helpers.CheckError(err)
 
 	users, err := get.GetAllUsers()
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	responseData := ResponseData{
+		Username: username,
+		Users:    users,
+	}
 
-	err = json.NewEncoder(w).Encode(users)
+	fmt.Println("My username is: ", username)
+	helpers.CheckError(err)
+
+	jsonUsers, err := json.Marshal(responseData)
 	if err != nil {
-		http.Error(w, "Error encoding response", http.StatusInternalServerError)
+		http.Error(w, "Error marshaling posts to JSON", http.StatusInternalServerError)
 		return
 	}
+
+	w.Write(jsonUsers)
 }

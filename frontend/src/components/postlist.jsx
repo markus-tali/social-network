@@ -71,6 +71,7 @@ function Postlist({refreshTrigger}) {
             });
             if (response.ok) {
                 console.log('Comment submitted:', content);
+                fetchComments()
             } else {
                 console.error('Failed to submit comment');
             }
@@ -116,7 +117,7 @@ function Postlist({refreshTrigger}) {
 
 
 
-                             <CreateComment onCommentSubmit={(comment,avatar) => handleCommentSubmit(comment,post.id, avatar)} />
+                             <CreateComment onCommentSubmit={(comment,avatar) => handleCommentSubmit(comment, post.id, avatar)} fetchComments={fetchComments} />
 
                             
                         </li>

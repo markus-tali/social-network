@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import  setupWebSocket  from "../components/websocket.jsx";
-
 const Login = ({onLogin}) => {
     const [loginData, setLoginData] = useState({
         usernameOrEmail: '',
@@ -14,11 +13,9 @@ const Login = ({onLogin}) => {
             [name]: value,
         });
     };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Form submitted:", loginData);
-
         try {
             console.log(JSON.stringify(loginData))
             const response = await fetch("http://localhost:8081/login", {
@@ -28,7 +25,6 @@ const Login = ({onLogin}) => {
                 body: JSON.stringify(loginData)
             });
             console.log(response)
-
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(errorText || 'Network response was not ok');
@@ -36,12 +32,10 @@ const Login = ({onLogin}) => {
      
             setupWebSocket();
             onLogin();
-
         } catch (error) {
             console.error('Error submitting form:', error);
         }
     };
-
     return (
         <div>
             <h2>Login</h2>
