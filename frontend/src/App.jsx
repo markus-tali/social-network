@@ -73,7 +73,7 @@ const App = () => {
     };
 
     return (
-        <>
+        <div className='appMain'>
             {!isLoggedIn ? (
                 <>
                     {showLogin ? (
@@ -87,7 +87,7 @@ const App = () => {
                 <Mainpage  onLogout={handleLogout} currentUsername={username} />
             )}
             {isLoggedIn}
-        </>
+        </div>
     );
 };
 

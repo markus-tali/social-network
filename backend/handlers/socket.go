@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/gorilla/websocket"
+	"main.go/backend/database/set"
 	"main.go/backend/helpers"
 )
 
@@ -46,6 +47,8 @@ func handleMessages() {
 		fmt.Println("Sõnumi kes: ", sms.ConnectedClients)
 		switch sms.Type {
 		case "message":
+
+			set.InsertMessage(sms.From, sms.To, sms.Message, sms.Date)
 			for client := range clientConnections {
 				// fmt.Println("Kliendi ID:", client.connOwnerId)
 				//sms.To ja client.connOwnerId väärtused peavad olema samad

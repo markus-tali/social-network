@@ -1,0 +1,66 @@
+/* Login page */
+.loginH1{
+    color: whitesmoke;
+    max-width: fit-content;
+    padding: 4%;
+    border-radius: 20px 10px 30px 5px;
+    background-color: #2B5474;
+    font-family: monospace ;
+    font-weight: 800;
+    font-size: xxx-large;
+}
+
+.loginForm{
+    display: flex;
+    flex-direction: column;
+    background-color: #79BAEC;
+    padding: 4%;  
+    border-radius: 20px 10px 30px 5px;
+    max-width: fit-content;
+    font-size: larger;
+}
+.loginH2{
+color: #29465B;
+}
+.emailLabel, .passLabel{
+    color: #29465B;
+}
+.userInput, .passInput{
+    background-color: bisque;
+}
+
+.loginButton{
+    background-color: #29465B;
+    width:fit-content;
+    border: none;
+    color: whitesmoke;
+}
+.loginButton:hover{
+    background-color: #566D7E;
+}
+
+.toggleButton{
+    background-color: #566d7e;
+    padding: 4%;
+    border-radius: 20px 10px 30px 5px;
+    border: none;
+
+}
+
+.loginMain{
+    /* background-color: aquamarine; */
+}
+.appMain{
+    /* background-color: #4682B4; */
+}
+
+.root{
+    /* background-color: black; */
+    /* height: auto; */
+    /* width:100%; */
+}
+.body{
+    background-color: #4682B4;
+
+
+}

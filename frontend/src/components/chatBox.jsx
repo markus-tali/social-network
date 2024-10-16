@@ -6,7 +6,8 @@ const MessageInput = ({ onSendMessage }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (messageContent.trim() === '') {
+        const trimmedMessage = messageContent.trim()
+        if (trimmedMessage === '') {
             alert('Message cannot be empty!');
             return;
         }
@@ -15,8 +16,7 @@ const MessageInput = ({ onSendMessage }) => {
         
 
         // Send the message locally without saving to any database
-        onSendMessage(messageContent);
-        sendMessage(messageContent)
+        onSendMessage(trimmedMessage);
         
         // Clear the input after sending the message
         setMessageContent('');

@@ -38,12 +38,15 @@ const Login = ({onLogin, checkSession}) => {
         }
     };
     return (
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <label>
+        <div className='loginMain'>
+            <h1 className='loginH1'>SOCIAL NETWORK</h1>
+
+            <form className='loginForm' onSubmit={handleSubmit}>
+            <h2 className='loginH2'>Login</h2>
+                <label className='emailLabel'>
                 Username or Email:
                     <input
+                    className='userInput'
                     type='text'
                     name='usernameOrEmail'
                     value={loginData.usernameOrEmail}
@@ -51,9 +54,10 @@ const Login = ({onLogin, checkSession}) => {
                     required
                     />
                 </label>
-                <label>
+                <label className='passLabel'>
                 Password:
                     <input
+                    className='passInput'
                     type='password'
                     name='password'
                     value={loginData.password}
@@ -61,7 +65,7 @@ const Login = ({onLogin, checkSession}) => {
                     required
                     />
                 </label>
-                <button type='submit'>Login</button>
+                <button className='loginButton' type='submit'>Login</button>
             </form>
         </div>
     );
