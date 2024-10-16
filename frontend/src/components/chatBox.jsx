@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import { sendMessage } from './websocket';
 
 const MessageInput = ({ onSendMessage }) => {
@@ -12,9 +11,13 @@ const MessageInput = ({ onSendMessage }) => {
             return;
         }
 
+
+        
+
         // Send the message locally without saving to any database
         onSendMessage(messageContent);
-
+        sendMessage(messageContent)
+        
         // Clear the input after sending the message
         setMessageContent('');
     };

@@ -1,10 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import MessageInput from "./chatBox";
+import { sendMessage } from './websocket';
+import setupWebSocket from './websocket';
 
 function RightSidenav({fromUsername}) {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [messages, setMessages] = useState([]); 
+
+    useEffect(() => {
+        const socket = setupWebSocket((message) => {
+
+            console.log("Sõnum saabus websocketist: ", message)
+            console.log("sonumi tyopr:", message.Type)
+            console.log("sonumi saab:", message.To, "mina olen:", fromUsername)
+            if (message.Type === "message" && message.To === fromUsername) {
+                // Kui sõnum on mõeldud praegusele kasutajale, lisa see sõnumite loendisse
+                console.log("sõnum saabus?")
+                setMessages((prevMessages) => [...prevMessages, message]);
+            }
+        });
+
+        return () => socket.close(); // Puhastame WebSocketi ühenduse komponenti sulgedes
+    }, [fromUsername]); // Jooksuta WebSocketi ühendus kasutaja nime põhjal
 
 
     useEffect(() => {
@@ -44,11 +62,15 @@ function RightSidenav({fromUsername}) {
         const newMessage = {
             From: fromUsername,
             Message: messageContent,
+            To: selectedUser.username,
             Date: new Date().toLocaleString(),
         };
 
-        setMessages((prevMessages) => [...prevMessages, newMessage]); // Append the new message
+        console.log("new message thingy we do rna", newMessage)
+        
+        sendMessage(newMessage)
 
+        setMessages((prevMessages) => [...prevMessages, newMessage]); // Append the new message for local user
     };
 
     return (

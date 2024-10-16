@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import  setupWebSocket  from "../components/websocket.jsx";
-const Login = ({onLogin}) => {
+
+const Login = ({onLogin, checkSession}) => {
     const [loginData, setLoginData] = useState({
         usernameOrEmail: '',
         password: '',
@@ -29,9 +30,9 @@ const Login = ({onLogin}) => {
                 const errorText = await response.text();
                 throw new Error(errorText || 'Network response was not ok');
             }
-     
-            setupWebSocket();
+            
             onLogin();
+            await checkSession()
         } catch (error) {
             console.error('Error submitting form:', error);
         }

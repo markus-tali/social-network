@@ -40,22 +40,28 @@ func handleMessages() {
 	for {
 
 		sms := <-broadcast
+		fmt.Println("mis on siis see:", sms.From)
 		fmt.Println("Sõnumi saaja:", sms.To)
-
+		fmt.Println("Sõnumi tekst: ", sms.Message)
+		fmt.Println("Sõnumi kes: ", sms.ConnectedClients)
 		switch sms.Type {
 		case "message":
 			for client := range clientConnections {
-				fmt.Println("Kliendi ID:", client.connOwnerId)
+				// fmt.Println("Kliendi ID:", client.connOwnerId)
+				//sms.To ja client.connOwnerId väärtused peavad olema samad
+				fmt.Printf("sms.To: %s, client.connOwnerId: %s\n", sms.To, client.connOwnerId)
 				if sms.To == client.connOwnerId {
+
 					client.mu.Lock()
-					fmt.Printf("Saadan sõnumi kasutajale: %s\n", client.connOwnerId)
+					// fmt.Printf("Saadan sõnumi kasutajale: %s\n", client.connOwnerId)
+
 					err := client.connection.WriteJSON(sms)
 					if err != nil {
 						fmt.Println(err)
 						client.connection.Close()
 						delete(clientConnections, client)
 					} else {
-						fmt.Printf("Sonum saadetud: %v\n", sms)
+						// fmt.Printf("Sonum saadetud: %v\n", sms)
 					}
 					client.mu.Unlock()
 				} else {
@@ -71,18 +77,26 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
+
 	defer conn.Close()
 	go handleMessages()
+
 	_, username, err := GetCookies(w, r)
 	fmt.Println("sock username", username)
 	helpers.CheckError(err)
+
 	client := &Client{
 		connection:  conn,
 		connOwnerId: username,
 		send:        make(chan []byte, 256),
 	}
+
 	clientConnections[client] = true
-	fmt.Println("The clients are: ", clientConnections[client])
+
+	for client := range clientConnections {
+		fmt.Println("The clients are: ", client)
+	}
+
 	defer func() {
 		client.connection.Close()
 		//this do offline
@@ -112,6 +126,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		// client.mu.Lock()
 		// client.mu.Unlock()
+
 		broadcast <- sms
 	}
 }
