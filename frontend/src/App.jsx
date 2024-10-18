@@ -34,6 +34,14 @@ const App = () => {
         
       }, [isLoggedIn]);
 
+      useEffect(() => {
+        if(!isLoggedIn){
+            document.body.classList.add('no-scroll')
+        }else{
+            document.body.classList.remove('no-scroll')
+        }
+      },[isLoggedIn]);
+
     //checks sessions
     const checkSession = async () => {
          try {
@@ -75,14 +83,14 @@ const App = () => {
     return (
         <div className='appMain'>
             {!isLoggedIn ? (
-                <>
+                <div className='loginContainerinApp'>
                     {showLogin ? (
                         <Login onLogin={handleLogin} checkSession={checkSession} />
                     ) : (
                         <Register onRegister={() => setIsRegistered(true)} />
                     )}
                     <ToggleButton showLogin={showLogin} onToggle={handleToggle} /> 
-                </>
+                </div>
             ) : (
                 <Mainpage  onLogout={handleLogout} currentUsername={username} />
             )}

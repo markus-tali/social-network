@@ -1,66 +1,113 @@
-/* Login page */
-.loginH1{
-    color: whitesmoke;
-    max-width: fit-content;
-    padding: 4%;
-    border-radius: 20px 10px 30px 5px;
-    background-color: #2B5474;
-    font-family: monospace ;
-    font-weight: 800;
-    font-size: xxx-large;
+.body{
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #2C2F33;
+    color: #99AAB5; 
+    margin: 0;
+    padding: 0;
 }
 
-.loginForm{
+/* App */
+.appMain{
+    overflow:unset;
+}
+.loginContainerinApp{
     display: flex;
     flex-direction: column;
-    background-color: #79BAEC;
-    padding: 4%;  
-    border-radius: 20px 10px 30px 5px;
-    max-width: fit-content;
-    font-size: larger;
+    align-items: center;
 }
-.loginH2{
-color: #29465B;
-}
-.emailLabel, .passLabel{
-    color: #29465B;
-}
-.userInput, .passInput{
-    background-color: bisque;
+.no-scroll{
+    overflow: hidden;
 }
 
-.loginButton{
-    background-color: #29465B;
-    width:fit-content;
-    border: none;
-    color: whitesmoke;
-}
-.loginButton:hover{
-    background-color: #566D7E;
-}
-
-.toggleButton{
-    background-color: #566d7e;
-    padding: 4%;
-    border-radius: 20px 10px 30px 5px;
-    border: none;
-
-}
+/* Login page */
 
 .loginMain{
-    /* background-color: aquamarine; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+    position: relative;
 }
-.appMain{
-    /* background-color: #4682B4; */
+.loginH1 {
+    color: #FFFFFF;
+    font-size: 48px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    background-color: #23272A; 
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+.loginH2 {
+    color: #99AAB5;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.emailLabel, .passLabel {
+    color: #99AAB5;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+.userInput, .passInput {
+    background-color: #40444B; /* Tumedam sisendvälja taust */
+    color: #FFFFFF;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+.userInput:focus, .passInput:focus {
+    background-color: #32353B; /* Kergelt heledam, kui aktiivne */
 }
 
-.root{
-    /* background-color: black; */
-    /* height: auto; */
-    /* width:100%; */
+.loginButton {
+    background-color: #7289DA; /* Erksinise nupu värv (Discord sinine) */
+    color: #FFFFFF;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
-.body{
-    background-color: #4682B4;
 
+.loginButton:hover {
+    background-color: #99AAB5; /* Hover efekt - hele sinine */
+}
 
+.toggleButton {
+    background-color: transparent;
+    color: #7289DA;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    padding: 15px;
+    margin-top: 700px;
+    position: absolute;
+    font-size: 14px;
+}
+
+.toggleButton:hover {
+    color: #FFFFFF; 
+}
+
+/* Registration */
+
+.h2register{
+    color: #99AAB5;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center; 
 }
