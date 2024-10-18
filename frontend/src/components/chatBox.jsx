@@ -1,8 +1,33 @@
 import React, { useState } from 'react';
-import { sendMessage } from './websocket';
 
 const MessageInput = ({ onSendMessage }) => {
     const [messageContent, setMessageContent] = useState('');
+
+    const replaceEmoticonsWithEmojis = (message) => {
+        const emoticonToEmojiMap = {
+            ':)': '😊',
+            ':(': '☹️',
+            ':D': '😃',
+            ';)': '😉',
+            ':P': '😛',
+            '<3': '❤️',
+            ':thumbsup': '👍',
+            ':thumbsdown:': '👎'
+        };
+
+        Object.keys(emoticonToEmojiMap).forEach((emoticon) => {
+            const emoji = emoticonToEmojiMap[emoticon];
+            message = message.split(emoticon).join(emoji);
+        });
+
+        return message;
+    };
+
+    const handleChange = (e) => {
+        const inputMessage = e.target.value;
+        const updatedMessage = replaceEmoticonsWithEmojis(inputMessage);  // Muuda emotikonid emojideks
+        setMessageContent(updatedMessage);  // Uuenda sõnumi sisendit
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -28,7 +53,7 @@ const MessageInput = ({ onSendMessage }) => {
                 type="text"
                 value={messageContent}
                 placeholder="Type your message here..."
-                onChange={(e) => setMessageContent(e.target.value)}
+                onChange={handleChange}
                 required
             />
             <button type="submit">Send</button>
