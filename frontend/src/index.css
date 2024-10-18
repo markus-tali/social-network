@@ -8,7 +8,6 @@
 
 /* App */
 .appMain{
-    overflow:unset;
 }
 .loginContainerinApp{
     display: flex;
@@ -58,22 +57,23 @@
     font-size: 14px;
 }
 .userInput, .passInput {
-    background-color: #40444B; /* Tumedam sisendvälja taust */
+    background-color: #40444B;
     color: #FFFFFF;
     border: none;
     padding: 12px;
     border-radius: 5px;
     margin-bottom: 20px;
+    margin-left: 10px;
     font-size: 16px;
     outline: none;
     transition: all 0.3s ease;
 }
 .userInput:focus, .passInput:focus {
-    background-color: #32353B; /* Kergelt heledam, kui aktiivne */
+    background-color: #32353B; 
 }
 
 .loginButton {
-    background-color: #7289DA; /* Erksinise nupu värv (Discord sinine) */
+    background-color: #7289DA; 
     color: #FFFFFF;
     padding: 12px;
     border: none;
@@ -84,7 +84,7 @@
 }
 
 .loginButton:hover {
-    background-color: #99AAB5; /* Hover efekt - hele sinine */
+    background-color: #99AAB5; 
 }
 
 .toggleButton {
@@ -94,7 +94,7 @@
     cursor: pointer;
     text-align: center;
     padding: 15px;
-    margin-top: 700px;
+    margin-top: 780px;
     position: absolute;
     font-size: 14px;
 }
@@ -104,10 +104,55 @@
 }
 
 /* Registration */
+.registrationPage{
+    display: flex ;
+    flex-direction: column ;
+    align-items: center;
+}
 
 .h2register{
     color: #99AAB5;
     font-size: 24px;
     margin-bottom: 20px;
     text-align: center; 
+}
+
+.registrationForm{
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    background-color: #23272A; 
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+.usernameInput, .passwordInput, .firstNameInput, .lastNameInput, .emailInput, .dateInput, .aboutMeInput, .nicknameInput, .AvatarInput, .registerButton{
+background-color: #40444B;
+    color: #FFFFFF;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    resize: none;
+    flex: 2;
+}
+.usernameInput:focus, .passwordInput:focus, .firstNameInput:focus, .lastNameInput:focus, .emailInput:focus, .dateInput:focus, .AvatarInput:focus, .registerButton:focus {
+    background-color: #32353B; 
+}
+.userNameDiv, .passwordDiv, .firstnameDiv, .lastNameDiv, .emailDiv, .dateDiv, .aboutMeDiv, .nicknameDiv, .avatarDiv{
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.usernameLabel, .passLabel, .firstNameLabel, .lastNameLabel, .emailLabel, .dateLabel, .aboutMeLabel, .nicknameLabel, .AvatarLabel {
+    flex: 1;
+    text-align: right; 
+    margin-right: 10px; 
+    font-size: 14px;
 }

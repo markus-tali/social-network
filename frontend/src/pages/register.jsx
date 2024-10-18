@@ -51,9 +51,10 @@ const Register = () => {
 
 
     return (
-        <div>
-            <h2 className='h2reister'>Register</h2>
-            <form onSubmit={handleSubmit}>
+        <div className='registrationPage'>
+            <h2 className='h2register'>Register</h2>
+            <form className='registrationForm' onSubmit={handleSubmit}>
+                <div className='userNameDiv'>
                 <label className='usernameLabel'>
                     Username:
                     <input 
@@ -63,8 +64,10 @@ const Register = () => {
                         value={formData.username}
                         onChange={handleChange}
                         required
-                    />
+                        />
                 </label>
+                </div>
+                <div className='passwordDiv'>
                 <label className='passLabel'>
                     Password:
                     <input 
@@ -74,8 +77,10 @@ const Register = () => {
                         value={formData.password}
                         onChange={handleChange}
                         required
-                    />
+                        />
                 </label>
+                </div>
+                <div className='firstnameDiv'>
                 <label className='firstNameLabel'>
                     First name:
                     <input 
@@ -85,8 +90,10 @@ const Register = () => {
                         value={formData.firstName}
                         onChange={handleChange}
                         required
-                    />
+                        />
                 </label>
+                </div>
+                <div className='lastNameDiv'>
                 <label className='lastNameLabel'>
                     Last name:
                     <input 
@@ -96,8 +103,10 @@ const Register = () => {
                         value={formData.lastName}
                         onChange={handleChange}
                         required
-                    />
+                        />
                 </label>
+                </div>
+                <div className='emailDiv'>
                 <label className='emailLabel'>
                     Email:
                     <input 
@@ -107,8 +116,10 @@ const Register = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                    />
+                        />
                 </label>
+                </div>
+                <div className='dateDiv'>
                 <label className='dateLabel'>
                     Date of birth:
                     <input 
@@ -118,8 +129,10 @@ const Register = () => {
                         value={formData.dateofBirth}
                         onChange={handleChange}
                         required
-                    />
+                        />
                 </label>
+                </div>
+                <div className='aboutMeDiv'>
                 <label className='aboutMeLabel'>
                     About Me:
                     <textarea 
@@ -127,8 +140,10 @@ const Register = () => {
                         name='aboutMe'
                         value={formData.aboutMe}
                         onChange={handleChange}
-                    />
+                        />
                 </label>
+                </div>
+                <div className='nicknameDiv'>
                 <label className='nicknameLabel'>
                     Nickname:
                     <textarea 
@@ -136,8 +151,10 @@ const Register = () => {
                         name='nickname'
                         value={formData.nickname}
                         onChange={handleChange}
-                    />
+                        />
                 </label>
+                </div>
+                <div className='avatarDiv'>
                 <label className='AvatarLabel'>
                     Avatar:
                     <input 
@@ -146,9 +163,12 @@ const Register = () => {
                         name='avatar'
                         accept='image/*'
                         onChange={handleChange}
-                    />
+                        />
                 </label>
-                <button type='submit'>Register</button>
+                </div>
+                <div className='registerButtonDiv'>
+                <button className='registerButton' type='submit'>Register</button>
+                </div>
             </form>
         </div>
     );
