@@ -46,9 +46,35 @@ function RightSidenav({fromUsername}) {
         fetchUsers();
     }, []); // Removed socket setup
 
-    const handleUserClick = (user) => {
+    const handleUserClick = async (user) => {
         setSelectedUser(user);
         setMessages([])
+
+        //fetching old messages
+        try{
+            const response = await fetch('http://localhost:8081/getmessages', {
+                method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'include',
+            headers: {'Content-Type': 'application/json'},
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify({ toUser: user.username })
+
+            })
+            const oldMessages = await response.json()
+            console.log("Old messages: ", oldMessages)
+
+            if (Array.isArray(oldMessages)) {
+                // Lisame vanad sõnumid sõnumite loendisse
+                setMessages((prevMessages) => [...oldMessages, ...prevMessages]);
+            } else {
+                console.log('No old messages found');
+            }
+        }
+        catch(error) {
+            console.error('Error fetching messages:', error)
+        }
     };
 
     const handleCloseChat = () => {

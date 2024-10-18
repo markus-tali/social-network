@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/websocket"
 	"main.go/backend/database/set"
 	"main.go/backend/helpers"
+	"main.go/backend/structs"
 )
 
 type Client struct {
@@ -15,16 +16,6 @@ type Client struct {
 	send        chan []byte
 	connOwnerId string
 	mu          sync.Mutex
-}
-type SMessage struct {
-	Type             string
-	Status           string
-	From             string
-	FromId           string
-	Message          string
-	To               string
-	Date             string
-	ConnectedClients []string
 }
 
 var upgrader = websocket.Upgrader{
@@ -35,7 +26,7 @@ var upgrader = websocket.Upgrader{
 	},
 }
 var clientConnections = make(map[*Client]bool)
-var broadcast = make(chan SMessage)
+var broadcast = make(chan structs.SMessage)
 
 func handleMessages() {
 	for {
@@ -107,7 +98,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 		for key := range clientConnections {
 			users = append(users, key.connOwnerId)
 		}
-		allUsers := SMessage{
+		allUsers := structs.SMessage{
 			Type:             "status",
 			Status:           "online",
 			ConnectedClients: users,
@@ -119,7 +110,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 	for {
-		var sms SMessage
+		var sms structs.SMessage
 		err := conn.ReadJSON(&sms)
 		if err != nil {
 			client.mu.Lock()
