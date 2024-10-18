@@ -52,11 +52,12 @@ const Register = () => {
 
     return (
         <div>
-            <h2>Register</h2>
+            <h2 className='h2reister'>Register</h2>
             <form onSubmit={handleSubmit}>
-                <label>
+                <label className='usernameLabel'>
                     Username:
                     <input 
+                        className='usernameInput'
                         type='text'
                         name='username'
                         value={formData.username}
@@ -64,9 +65,10 @@ const Register = () => {
                         required
                     />
                 </label>
-                <label>
+                <label className='passLabel'>
                     Password:
                     <input 
+                        className='passwordInput'
                         type='password'
                         name='password'
                         value={formData.password}
@@ -74,9 +76,10 @@ const Register = () => {
                         required
                     />
                 </label>
-                <label>
+                <label className='firstNameLabel'>
                     First name:
                     <input 
+                        className='firstNameInput'
                         type='text'
                         name='firstName'
                         value={formData.firstName}
@@ -84,9 +87,10 @@ const Register = () => {
                         required
                     />
                 </label>
-                <label>
+                <label className='lastNameLabel'>
                     Last name:
                     <input 
+                        className='lastNameInput'
                         type='text'
                         name='lastName'
                         value={formData.lastName}
@@ -94,9 +98,10 @@ const Register = () => {
                         required
                     />
                 </label>
-                <label>
+                <label className='emailLabel'>
                     Email:
                     <input 
+                        className='emailInput'
                         type='email'
                         name='email'
                         value={formData.email}
@@ -104,9 +109,10 @@ const Register = () => {
                         required
                     />
                 </label>
-                <label>
+                <label className='dateLabel'>
                     Date of birth:
                     <input 
+                        className='dateInput'
                         type='date'
                         name='dateofBirth'
                         value={formData.dateofBirth}
@@ -114,25 +120,28 @@ const Register = () => {
                         required
                     />
                 </label>
-                <label>
+                <label className='aboutMeLabel'>
                     About Me:
                     <textarea 
+                        className='aboutMeInput'
                         name='aboutMe'
                         value={formData.aboutMe}
                         onChange={handleChange}
                     />
                 </label>
-                <label>
+                <label className='nicknameLabel'>
                     Nickname:
                     <textarea 
+                        className='nicknameInput'
                         name='nickname'
                         value={formData.nickname}
                         onChange={handleChange}
                     />
                 </label>
-                <label>
+                <label className='AvatarLabel'>
                     Avatar:
                     <input 
+                        className='AvatarInput'
                         type='file'
                         name='avatar'
                         accept='image/*'
