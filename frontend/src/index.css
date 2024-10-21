@@ -203,3 +203,22 @@ background-color: #99AAB5;
 .headerButton:hover {
     background-color: #4f545c;
 }
+/* Rightside Nav */
+.users{
+    background-color: #23272A;
+    color: #99AAB5;
+    padding: 10px;
+}
+.chatWindow{
+    background-color: #2C2F33;
+    padding: 10px;
+}
+.messageDisplay{
+    border:1px solid #40444B;
+    border-radius: 5px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 5px;
+}
+/* Main page */
+

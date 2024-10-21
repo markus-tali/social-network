@@ -70,12 +70,6 @@ Public
         Private
     </label>
 </div>
-<div>
-    <label>
-        <input type="radio" value="almostPrivate" checked={postPrivacy === 'almostPrivate'} onChange={handlePrivacyChange} />
-        Almost Private
-    </label>
-</div>
             </div>
             <button type="submit">Submit Post</button>
         </form>

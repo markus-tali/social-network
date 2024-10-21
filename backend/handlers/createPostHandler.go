@@ -29,7 +29,8 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	postTitle := r.FormValue("title")
 	postText := r.FormValue("content")
-	fmt.Println(postTitle, postText)
+	postPrivacy := r.FormValue("privacy")
+	fmt.Println(postTitle, postText, postPrivacy)
 
 	//read avatar formvalue
 	avatarPath := utils.GetAvatars(username, w, r)
@@ -43,7 +44,7 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Post title is: ", postTitle, "Post content is: ", postText)
 	fmt.Println("username for post", username)
 
-	set.InsertPost(username, postTitle, postText, avatarPath)
+	set.InsertPost(username, postTitle, postText, postPrivacy, avatarPath)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Data received successfully"))
 }
