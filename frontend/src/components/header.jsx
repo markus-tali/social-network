@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import handleLogout from './handeLogout.jsx'
+import MyPage from '../pages/mypage.jsx';
 
-const Header =  ({onLogout, setIsCreatingPost}) => {
-
+const Header =  ({onLogout, setIsCreatingPost, toggleMyPage, isMyPageVisible}) => {
     const handleLogoutClick = () => {
         handleLogout(onLogout);
     };
@@ -10,25 +10,33 @@ const Header =  ({onLogout, setIsCreatingPost}) => {
     const handleCreatePostClick = () => {
         setIsCreatingPost(true)
     }
-    
+
+
     return(
 
 
     <header className='headerformain'>
-    <nav>
-    <ul>
-    <li><a href="#home">Home</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#users">Users</a></li>
-    <li>
-    <button onClick={handleCreatePostClick}> Create Post</button>
-    </li>
-    <li>
-    <button onClick={handleLogoutClick}>Log out</button>
-    </li>
+        <nav className='headernav'>
+            <ul className='headerul'>
+                <li className='headerlist'><a href="#home">Home</a></li>
+                <li className='headerlist'><a href="#about">About</a></li>
+                <li className='headerlist'>
+                    <button className='headerButton' onClick={toggleMyPage}>
+                        {isMyPageVisible ? 'Back' : 'MyPage'}
+                    </button>
+                </li>
+                <li className='headerlist'>
+                    <button className='headerButton' onClick={handleCreatePostClick}> Create Post</button>
+                </li>
+                <li className='headerlist'>
+                    <button className='headerButton' onClick={handleLogoutClick}>Log out</button>
+                </li>
 
-    </ul>
-    </nav>
+            </ul>
+        </nav>
+    {isMyPageVisible && (
+        <MyPage />
+    )}
     </header>
 
 )}

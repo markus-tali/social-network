@@ -30,8 +30,8 @@ const Login = ({onLogin, checkSession}) => {
                 const errorText = await response.text();
                 throw new Error(errorText || 'Network response was not ok');
             }
-            
-            onLogin();
+            const userData = await response.json()
+            onLogin(userData);
             await checkSession()
         } catch (error) {
             console.error('Error submitting form:', error);

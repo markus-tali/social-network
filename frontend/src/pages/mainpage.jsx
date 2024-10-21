@@ -4,11 +4,12 @@ import Footer from "../components/footer.jsx";
 import PostCreation from '../components/content.jsx';
 import Postlist from '../components/postlist.jsx';
 import RightSidenav from '../components/rightsidenav.jsx';
+import MyPage from "../pages/mypage.jsx";
 
  function Mainpage({onLogout, currentUsername} ) {
     const [isCreatingPost, setIsCreatingPost] = useState(false)
     const [shouldRefreshPosts, setShouldRefreshPosts] = useState(false)
-
+    const [isMyPageVisible, setIsMyPageVisible] = useState(false); 
 
     const handlePostCreated = () => {
         console.log("Refreshing posts...")
@@ -16,19 +17,32 @@ import RightSidenav from '../components/rightsidenav.jsx';
         setShouldRefreshPosts(prev => !prev);
     }
 
+    const toggleMyPage = () => {
+        setIsMyPageVisible(prevState => !prevState); 
+    };
+
+    const goBack = () => {
+        setIsMyPageVisible(false); 
+    }
+
     return (
         <div className="mainpage">
-          <Header onLogout={onLogout} setIsCreatingPost={setIsCreatingPost}/>
-          <PostCreation
-        isCreatingPost={isCreatingPost}
-        handlePostCreated={handlePostCreated}
-        fetchPosts={handlePostCreated}
-            />
-            <Postlist refreshTrigger={shouldRefreshPosts}/>
+          <Header onLogout={onLogout} setIsCreatingPost={setIsCreatingPost} toggleMyPage={toggleMyPage} goBack={goBack} isMyPageVisible={isMyPageVisible} />
 
-            <div className="right-sidebar" style={{ flex: 1 }}>
-                    <RightSidenav fromUsername={currentUsername}/>
+            {!isMyPageVisible && (
+                <div>
+                    <PostCreation isCreatingPost={isCreatingPost} handlePostCreated={handlePostCreated} fetchPosts={handlePostCreated}/>
+                    <Postlist refreshTrigger={shouldRefreshPosts}/>
+                    <div className="right-sidebar" >
+                            <RightSidenav fromUsername={currentUsername}/>
+                    </div>
                 </div>
+            )}
+
+            {isMyPageVisible && <MyPage/>}
+            <div>
+                <MyPage />
+            </div>
 
             <Footer />
         </div>

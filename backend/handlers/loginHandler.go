@@ -47,6 +47,23 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received input in login: " + usernameOrEmail + " " + password)
 
 	SetCookies(w, r, user.Username)
+
+	userData := map[string]string{
+		"Username":    user.Username,
+		"Email":       user.Email,
+		"Firstname":   user.FirstName,
+		"Lastname":    user.LastName,
+		"DateOfBirth": user.DateofBirth,
+		"Avatar":      user.Avatar,
+		"Nickname":    user.Nickname,
+		"AboutMe":     user.AboutMe,
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(userData)
+	if err != nil {
+		http.Error(w, "Failed to encode user data", http.StatusInternalServerError)
+		return
+	}
 	c, _ := r.Cookie("accessToken")
 	fmt.Println("login cookie", c)
 }

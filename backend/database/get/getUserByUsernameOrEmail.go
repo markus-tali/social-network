@@ -11,6 +11,6 @@ func GetUserByUsernameOrEmail(usernameOrEmail string) (*structs.User, error) {
 	helpers.CheckError(err)
 	defer db.Close()
 	var u structs.User
-	err = db.QueryRow("SELECT id, username, password, email FROM users WHERE username = $1 OR email = $1", usernameOrEmail).Scan(&u.Id, &u.Username, &u.Password, &u.Email)
+	err = db.QueryRow("SELECT id, username, password, email, firstName, lastName, dateOfBirth, avatar, nickname, aboutMe FROM users WHERE username = $1 OR email = $1", usernameOrEmail).Scan(&u.Id, &u.Username, &u.Password, &u.Email, &u.FirstName, &u.LastName, &u.DateofBirth, &u.Avatar, &u.Nickname, &u.AboutMe)
 	return &u, err
 }

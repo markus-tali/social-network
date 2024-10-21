@@ -7,8 +7,7 @@
 }
 
 /* App */
-.appMain{
-}
+
 .loginContainerinApp{
     display: flex;
     flex-direction: column;
@@ -120,7 +119,6 @@
 .registrationForm{
     display: flex;
     flex-direction: column;
-    align-items: end;
     background-color: #23272A; 
     padding: 30px;
     border-radius: 10px;
@@ -155,4 +153,53 @@ background-color: #40444B;
     text-align: right; 
     margin-right: 10px; 
     font-size: 14px;
+}
+.registerButton{
+background-color: #7289DA; 
+color: #FFFFFF;
+padding: 12px;
+border: none;
+border-radius: 5px;
+font-size: 16px;
+cursor: pointer;
+transition: background-color 0.3s ease;
+width: 100%;
+}
+
+.registerButton:hover {
+background-color: #99AAB5; 
+}
+
+/* header */
+.headerformain{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.headernav{
+    display: flex;
+    flex-direction: column;
+}
+.headerul{
+    display: flex;
+    flex-direction: column;
+}
+.headerlist{
+    list-style: none;
+    display: flex;
+}
+.headerButton{
+    display: block;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: #b9bbbe; 
+    background-color: #2f3136; 
+    margin-left: 10px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.headerButton:hover {
+    background-color: #4f545c;
 }

@@ -8,6 +8,7 @@ import setupWebSocket from "./components/websocket.jsx";
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showLogin, setShowLogin] = useState(true);
+    const [userData, setUserData] = useState(null)
     const[username, setUsername] = useState(null)
     const [messages, setMessages] = useState([])
 
@@ -67,7 +68,9 @@ const App = () => {
     const handleLogin = async () => {
         await checkSession()
         setIsLoggedIn(true);
+        setUserData(userData)
         setUsername(username)
+        console.log("userTataa: ", userData)
         localStorage.setItem('isLoggedIn', 'true');
     };
 
@@ -78,6 +81,7 @@ const App = () => {
     }
     const handleToggle = () => {
         setShowLogin((prev) => !prev);
+        console.log("handling toggle, my page:", !isMyPageVisible)
     };
 
     return (

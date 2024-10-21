@@ -4,16 +4,22 @@ function CreatePost({ onPostCreated }){
     const [postTitle, setPostTitle] = useState('')
     const [postContent, setPostContent] = useState('')
     const [selectedFile, setSelectedFile] = useState(null)
+    const [postPrivacy, setPostPrivacy] = useState('public')
 
     const handleFileChange = (e) =>{
         setSelectedFile(e.target.files[0])
     }
+    const handlePrivacyChange = (e) => {
+        setPostPrivacy(e.target.value);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault()
 
         const formData = new FormData()
         formData.append('title', postTitle)
         formData.append('content', postContent)
+        formData.append('privacy', postPrivacy)
         if (selectedFile){
         formData.append('avatar', selectedFile)
         }
@@ -49,6 +55,27 @@ function CreatePost({ onPostCreated }){
             <div>
                 <label>Upload and Image or GIF:</label>
                 <input type="file" accept="image/*" onChange={handleFileChange} />
+            </div>
+            <div>
+                <label>Post Privacy:</label>
+                <div>
+<label>
+                <input type="radio" value="public" checked={postPrivacy === 'public'} onChange={handlePrivacyChange}/>
+Public
+</label>
+                </div>
+<div>
+    <label>
+        <input type="radio" value="private" checked={postPrivacy === 'private'} onChange={handlePrivacyChange} />
+        Private
+    </label>
+</div>
+<div>
+    <label>
+        <input type="radio" value="almostPrivate" checked={postPrivacy === 'almostPrivate'} onChange={handlePrivacyChange} />
+        Almost Private
+    </label>
+</div>
             </div>
             <button type="submit">Submit Post</button>
         </form>
