@@ -172,7 +172,6 @@ function RightSidenav({fromUsername}) {
                         ))}
                     </div>
                     <MessageInput onSendMessage={handleSendMessage} />
-                    <button onClick={handleCloseChat}>Close chat</button>
                 </div>
             )}
         </div>
