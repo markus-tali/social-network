@@ -2,16 +2,12 @@ import React, {useState} from 'react';
 import handleLogout from './handeLogout.jsx'
 import MyPage from '../pages/mypage.jsx';
 
-const Header =  ({onLogout, setIsCreatingPost, toggleMyPage, isMyPageVisible}) => {
+const Header =  ({onLogout, isCreatingPost, toggleCreatePost, toggleMyPage, isMyPageVisible}) => {
     const handleLogoutClick = () => {
         handleLogout(onLogout);
     };
 
-    const handleCreatePostClick = () => {
-        setIsCreatingPost(true)
-    }
-
-
+  
     return(
 
 
@@ -26,7 +22,9 @@ const Header =  ({onLogout, setIsCreatingPost, toggleMyPage, isMyPageVisible}) =
                     </button>
                 </li>
                 <li className='headerlist'>
-                    <button className='headerButton' onClick={handleCreatePostClick}> Create Post</button>
+                    <button className='headerButton' onClick={toggleCreatePost} > 
+                        {isCreatingPost ? 'Close post' : 'Create Post'}
+                        </button>
                 </li>
                 <li className='headerlist'>
                     <button className='headerButton' onClick={handleLogoutClick}>Log out</button>

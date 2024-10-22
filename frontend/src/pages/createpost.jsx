@@ -43,35 +43,43 @@ function CreatePost({ onPostCreated }){
         }
     }
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>Post Title:</label>
-                <input type="text" value={postTitle} onChange={(e) => setPostTitle(e.target.value)} required />
+        <form className='createPostForm' onSubmit={handleSubmit}>
+            <div className='postFormField'>
+
+            <div className='postTitleForm'>
+                <label className='postLabel'>Post Title:</label>
+                <input className='postInput' type="text" value={postTitle} onChange={(e) => setPostTitle(e.target.value)} required />
             </div>
-            <div>
-                <label>Post Content:</label>
-                <textarea value={postContent} onChange={(e) => setPostContent(e.target.value)} required></textarea>
+            <div className='postContentForm'>
+                <label className='postLabel'>Post Content:</label>
+                <textarea className='postTextArea' value={postContent} onChange={(e) => setPostContent(e.target.value)} required></textarea>
             </div>
-            <div>
-                <label>Upload and Image or GIF:</label>
-                <input type="file" accept="image/*" onChange={handleFileChange} />
+            <div className='postAvatarForm'>
+                <label className='postLabel'>Upload and Image or GIF:</label>
+                <input className='postFileInput' type="file" accept="image/*" onChange={handleFileChange} />
             </div>
-            <div>
-                <label>Post Privacy:</label>
-                <div>
-<label>
-                <input type="radio" value="public" checked={postPrivacy === 'public'} onChange={handlePrivacyChange}/>
-Public
-</label>
+            <div className='postPrivacyForm'>
+                <label className='postLabel'>Post Privacy:</label>
+            <div className='postRadioGroup'>
+
+            <div className='postRadioLabelForm'>
+                <label className='postLabel'>
+                    <input className='postInput' type="radio" value="public" checked={postPrivacy === 'public'} onChange={handlePrivacyChange}/>
+                    Public
+                </label>
+            </div>
+                <div className='postRadioForm'>
+                    <label className='postLabel' >
+                        <input className='postInput' type="radio" value="private" checked={postPrivacy === 'private'} onChange={handlePrivacyChange} />
+                        Private
+                    </label>
                 </div>
-<div>
-    <label>
-        <input type="radio" value="private" checked={postPrivacy === 'private'} onChange={handlePrivacyChange} />
-        Private
-    </label>
-</div>
             </div>
-            <button type="submit">Submit Post</button>
+            </div>
+            <div className='postButtonForm'>
+            <button className='postButton' type="submit">Submit Post</button>
+            </div>
+            </div>
         </form>
     )
 }

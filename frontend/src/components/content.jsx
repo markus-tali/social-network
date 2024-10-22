@@ -1,20 +1,18 @@
 import React from 'react';
 import CreatePost from '../pages/createpost.jsx';
 
-function PostCreation ({ isCreatingPost, handlePostCreated}){
-  return(
-<main className='content'>
-{!isCreatingPost ? (
-    <p>Main content area</p>
-) : (
-  <CreatePost
-  onPostCreated={() => {
-    handlePostCreated(); 
-  }}
-/>
-)}
-</main>
-  )
+function PostCreation({ isCreatingPost, handlePostCreated }) {
+  return (
+    <main className='content'>
+      {isCreatingPost && (
+        <CreatePost
+          onPostCreated={() => {
+            handlePostCreated();
+          }}
+        />
+      )}
+    </main>
+  );
 }
 
-export default PostCreation
+export default PostCreation;
