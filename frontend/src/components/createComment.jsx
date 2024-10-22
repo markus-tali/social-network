@@ -1,10 +1,10 @@
-import React, {useState, } from 'react';
+import React, {useState, useRef } from 'react';
 
 const CreateComment = ({onCommentSubmit, fetchComments}) => {
 
     const [comment, setComment] = useState('');
     const [avatar, setavatar] = useState(null);
-    
+    const fileInputRef = useRef(null);
 
     const handleAvatarChange = (e) => {
       const file = e.target.files[0]
@@ -19,14 +19,19 @@ const CreateComment = ({onCommentSubmit, fetchComments}) => {
             onCommentSubmit(comment, avatar)
             setComment('');
             setavatar(null)
+            // Clear the file input field
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''; // Reset the file input
+      }
         }else{
             alert('Please enter comment')
         }
     }
   return (
     <div>
-    <form onSubmit={handleSubmit}>
+    <form className='commentForm' onSubmit={handleSubmit}>
       <textarea
+      className='commentTextArea'
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         placeholder="Write your comment..."
@@ -35,11 +40,13 @@ const CreateComment = ({onCommentSubmit, fetchComments}) => {
       />
       <br />
       <input
+      className='commentFileInput'
                 type="file"
                 accept="image/*"
                 onChange={handleAvatarChange}
+                ref={fileInputRef}
                 />
-      <button type="submit">Submit Comment</button>
+      <button className='commentButton' type="submit">Submit Comment</button>
     </form>
     </div>
   )

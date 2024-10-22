@@ -131,17 +131,17 @@ function RightSidenav({fromUsername}) {
 
     return (
         <div className='users'>
-        <button onClick={toggleUserList}>
-        <img src={hasNewMessage ? "src/assets/notifiation2.png" : "src/assets/notification1.png"} alt="messages" />
+        <button className='userListButton' onClick={toggleUserList}>
+        <img className='userListImg' src={hasNewMessage ? "src/assets/notifiation2.png" : "src/assets/notification1.png"} alt="messages" />
         </button>
         {isUserListVisible &&(
-<>
+<div>
             <h2>Userlist:</h2>
             <ul>
                 {users.length > 0 ? (
                     users.map((user) => (
                         <li key={user.Id}>
-                            <button onClick={() => handleUserClick(user)}>
+                            <button  onClick={() => handleUserClick(user)}>
                             <span style={{ fontWeight: newMessageUsers.includes(user.username) ? 'bold' : 'normal' }}>
                                             {user.username}
                                             {newMessageCount[user.username] > 0 && (
@@ -155,16 +155,13 @@ function RightSidenav({fromUsername}) {
                     <li>No users found</li>
                 )}
             </ul>
-</>
+</ div>
                 )}
          
             {selectedUser && (
                 <div className='chatWindow'>
                     <h3>Chat with {selectedUser.username}</h3>
-                    <div
-                        className='messageDisplay'
-                        style={{ border: '1px solid black', height: '200px', overflowY: 'scroll' }}
-                    >
+                    <div className='messageDisplay'>
                         {messages.map((msg, index) => (
                             <div key={index}>
                                 <strong>{msg.From}</strong>: {msg.Message} ({msg.Date})

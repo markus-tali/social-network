@@ -30,6 +30,7 @@ import CreatePost from './createpost.jsx';
 
 
     return (
+    
         <div className="mainpage">
             <Header 
                 onLogout={onLogout} 
@@ -37,21 +38,21 @@ import CreatePost from './createpost.jsx';
                 toggleCreatePost={toggleCreatePost} 
                 toggleMyPage={toggleMyPage} 
                 isMyPageVisible={isMyPageVisible} 
+                currentUsername={currentUsername}
             />
+            <div className='chatBoxDiv' >
 
             {!isMyPageVisible && (
-                <div>
+                <div className='try'>
                     {isCreatingPost && (
                         <CreatePost onPostCreated={handlePostCreated} />
                     )}
                     <Postlist refreshTrigger={shouldRefreshPosts} />
-                    <div className="right-sidebar">
-                        <RightSidenav fromUsername={currentUsername} />
-                    </div>
                 </div>
             )}
 
             {isMyPageVisible && <MyPage />}
+            </div>
 
             <Footer />
         </div>

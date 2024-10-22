@@ -83,32 +83,35 @@ function Postlist({refreshTrigger}) {
 
     return (
         <div className="posts">
-            <h2>Posts</h2>
+            <h2 className='postsH2'>Posts</h2>
             {posts.length > 0 ? (
-                <ul>
+                <ul className='postsUl'>
                     {posts.map((post) => (
-                        <li key={post.id}>
+                        <li className='postsLi' key={post.id}>
                             
-                            <h3>{post.title}</h3>
-                            <p>{post.content}</p>
+                            <h3 className='postsH3'>{post.title}</h3>
+                            <p className='postsP'>{post.content}</p>
 
-                            {post.avatar && post.avatar.length > 0 && ( <img src={`http://localhost:8081/utils/avatar/${post.avatar}`} alt="picture" />)}
+                            {post.avatar && post.avatar.length > 0 && ( <img className='postsAvatarImg' src={`http://localhost:8081/utils/avatar/${post.avatar}`} alt="picture" />)}
 
-                            
-                            <p>{post.username}</p>
 
-                            <ul>
+                            <p className='postsPostedBy'>Posted By: {post.username}</p>
+
+
+                            <h3 className='commentSection'>Comments:</h3>
+                            <ul className='commentSectionUl'>
                                 {comments.map((comment) => (
                                 comment.postId === post.id && (
-                                <li key={comment.id}>
-                                    <p>{comment.username} comment:</p>
+                                <li className='commentBoxes' key={comment.id}>
+                                    <p className='commentUsernames'>{comment.username} comment:</p>
                                     <p>{comment.content}</p>
                                     <p>{comment.createdAt}</p>
                                     {comment.avatar && comment.avatar.length > 0 && (
-                                    <img
+                                        <img
+                                        className='commentPicture'
                                         src={`http://localhost:8081/utils/avatar/${comment.avatar}`}
                                         alt="comment picture"
-                                    />
+                                        />
                                     )}
                                 </li>
                                 )
