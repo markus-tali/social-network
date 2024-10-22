@@ -34,9 +34,7 @@ const Header =  ({onLogout, setIsCreatingPost, toggleMyPage, isMyPageVisible}) =
 
             </ul>
         </nav>
-    {isMyPageVisible && (
-        <MyPage />
-    )}
+    
     </header>
 
 )}

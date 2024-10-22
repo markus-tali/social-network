@@ -18,11 +18,15 @@ import MyPage from "../pages/mypage.jsx";
     }
 
     const toggleMyPage = () => {
+        console.log("I am toggling Mypage")
         setIsMyPageVisible(prevState => !prevState); 
     };
 
     const goBack = () => {
+        console.log("I am toggling away")
         setIsMyPageVisible(false); 
+        console.log("I am toggling away")
+
     }
 
     return (
@@ -31,7 +35,7 @@ import MyPage from "../pages/mypage.jsx";
 
             {!isMyPageVisible && (
                 <div>
-                    <PostCreation isCreatingPost={isCreatingPost} handlePostCreated={handlePostCreated} fetchPosts={handlePostCreated}/>
+                    <PostCreation className='postCreation' isCreatingPost={isCreatingPost} handlePostCreated={handlePostCreated} fetchPosts={handlePostCreated}/>
                     <Postlist refreshTrigger={shouldRefreshPosts}/>
                     <div className="right-sidebar" >
                             <RightSidenav fromUsername={currentUsername}/>
@@ -40,9 +44,6 @@ import MyPage from "../pages/mypage.jsx";
             )}
 
             {isMyPageVisible && <MyPage/>}
-            <div>
-                <MyPage />
-            </div>
 
             <Footer />
         </div>
