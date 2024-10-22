@@ -7,6 +7,10 @@ function RightSidenav({fromUsername}) {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [messages, setMessages] = useState([]); 
+    const [isUserListVisible, setIsUserListVisible] = useState(false)
+    const [hasNewMessage, setHasNewMessage] = useState(false)
+    const [newMessageUsers, setNewMessageUsers] = useState([])
+    const [newMessageCount, setNewMessageCount] = useState({})
 
     useEffect(() => {
         const socket = setupWebSocket((message) => {
@@ -18,11 +22,20 @@ function RightSidenav({fromUsername}) {
                 // Kui sõnum on mõeldud praegusele kasutajale, lisa see sõnumite loendisse
                 console.log("sõnum saabus?")
                 setMessages((prevMessages) => [...prevMessages, message]);
+
+                if (!selectedUser || message.From !== selectedUser.username) {
+                    setNewMessageCount((prevCount) => ({
+                        ...prevCount,
+                        [message.From]: (prevCount[message.From] || 0) + 1, // Increase the count for this user
+                    }));
+                    setNewMessageUsers((prev) => [...new Set([...prev, message.From])])
+                    setHasNewMessage(true); // New message from a user you're not chatting with
+                }
             }
         });
 
         return () => socket.close(); // Puhastame WebSocketi ühenduse komponenti sulgedes
-    }, [fromUsername]); // Jooksuta WebSocketi ühendus kasutaja nime põhjal
+    }, [fromUsername, selectedUser]); // Jooksuta WebSocketi ühendus kasutaja nime põhjal
 
 
     useEffect(() => {
@@ -47,8 +60,21 @@ function RightSidenav({fromUsername}) {
     }, []); // Removed socket setup
 
     const handleUserClick = async (user) => {
+        // Toggle the chat window off if the same user is clicked again
+        if (selectedUser && selectedUser.username === user.username) {
+            setSelectedUser(null);
+            setMessages([]); // Reset messages when chat is closed
+            return;
+        }
+
         setSelectedUser(user);
         setMessages([])
+        setHasNewMessage(false)
+        setNewMessageUsers((prev) => prev.filter((username) => username !== user.username));
+        setNewMessageCount((prevCount) => ({
+            ...prevCount,
+            [user.username]: 0, // Reset the count for this user
+        }));
 
         //fetching old messages
         try{
@@ -99,15 +125,29 @@ function RightSidenav({fromUsername}) {
         setMessages((prevMessages) => [...prevMessages, newMessage]); // Append the new message for local user
     };
 
+    const toggleUserList = () => {
+        setIsUserListVisible(!isUserListVisible)
+    }
+
     return (
         <div className='users'>
+        <button onClick={toggleUserList}>
+        <img src={hasNewMessage ? "src/assets/notifiation2.png" : "src/assets/notification1.png"} alt="messages" />
+        </button>
+        {isUserListVisible &&(
+<>
             <h2>Userlist:</h2>
             <ul>
                 {users.length > 0 ? (
                     users.map((user) => (
                         <li key={user.Id}>
                             <button onClick={() => handleUserClick(user)}>
-                                {user.username}
+                            <span style={{ fontWeight: newMessageUsers.includes(user.username) ? 'bold' : 'normal' }}>
+                                            {user.username}
+                                            {newMessageCount[user.username] > 0 && (
+                                                <span> ({newMessageCount[user.username]})</span>
+                                            )}
+                                        </span>
                             </button>
                         </li>
                     ))
@@ -115,6 +155,8 @@ function RightSidenav({fromUsername}) {
                     <li>No users found</li>
                 )}
             </ul>
+</>
+                )}
          
             {selectedUser && (
                 <div className='chatWindow'>
