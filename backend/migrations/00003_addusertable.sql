@@ -9,7 +9,8 @@ CREATE TABLE users (
     dateOfBirth DATETIME NOT NULL,
     avatar TEXT DEFAULT '',
     nickname TEXT DEFAULT '',
-    aboutMe TEXT DEFAULT ''
+    aboutMe TEXT DEFAULT '',
+    isPrivate INTEGER DEFAULT 0
 );
 -- +goose Down
 DROP TABLE users;

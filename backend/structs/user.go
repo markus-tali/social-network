@@ -11,4 +11,5 @@ type User struct {
 	AboutMe     string `json:"aboutMe"`
 	Nickname    string `json:"nickname"`
 	Avatar      string `json:"avatar"`
+	IsPrivate   bool   `json:"isPrivate"`
 }
