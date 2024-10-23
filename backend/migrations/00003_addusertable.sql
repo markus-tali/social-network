@@ -10,7 +10,9 @@ CREATE TABLE users (
     avatar TEXT DEFAULT '',
     nickname TEXT DEFAULT '',
     aboutMe TEXT DEFAULT '',
-    isPrivate INTEGER DEFAULT 0
+    isPrivate INTEGER DEFAULT 0,
+    followedBy TEXT DEFAULT,
+    isFollowing TEXT DEFAULT
 );
 -- +goose Down
 DROP TABLE users;

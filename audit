@@ -30,14 +30,14 @@ Are clients able to request information stored in the database, and can they sub
 
 ~~Does the app implement a migration system?~~
 
-Is that migration file system well organized? (like the example from the subject)
+~~Is that migration file system well organized? (like the example from the subject)~~
 
 ~~Start the social network application, then enter the database using the command "sqlite3 <database_name.db>".~~
 ~~Are the migrations being applied by the migration system?~~
 
 `Authentication`
 
-Does the app implement sessions for the authentication of the users?
+~~Does the app implement sessions for the authentication of the users?~~
 
 ~~Are the correct form elements being used in the registration? (Email, Password, First Name, Last Name, Date of Birth, Avatar/Image (Optional), Nickname (Optional), About Me (Optional))~~
 
