@@ -32,6 +32,7 @@ const Login = ({onLogin, checkSession}) => {
             }
             const userData = await response.json()
             onLogin(userData);
+            console.log("user date ", userData)
             await checkSession()
         } catch (error) {
             console.error('Error submitting form:', error);

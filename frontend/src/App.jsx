@@ -47,16 +47,19 @@ const App = () => {
     const checkSession = async () => {
          try {
              const response = await fetch('http://localhost:8081/session', {
-                 method: 'GET',
-                 credentials: 'include',  
+                method: 'POST',
+                credentials:'include',
+                headers: {'Content-Type':'application/json'},
              });
 
 
              if (response.ok) {
                  const data = await response.json();
+                 console.log("here is data!", data)
                  if (data.isLoggedIn) {
                      setIsLoggedIn(true); 
-                     setUsername(data.username)
+                     setUserData(data)
+                     setUsername(data.Username)
                  } else {
                      console.error('Session invalid or not found')
                  }
@@ -65,13 +68,14 @@ const App = () => {
              console.error('Error checking session:', error);
          }
      };
-    const handleLogin = async () => {
+    const handleLogin = async (userDataFromLogin) => {
         await checkSession()
         setIsLoggedIn(true);
-        setUserData(userData)
-        setUsername(username)
-        console.log("userTataa: ", userData)
+        setUserData(userDataFromLogin)
+        setUsername(userDataFromLogin.Username)
+        console.log("userTataa: ", userDataFromLogin)
         localStorage.setItem('isLoggedIn', 'true');
+        console.log("userData", userData)
     };
 
     const handleLogout = () => {
@@ -96,7 +100,7 @@ const App = () => {
                     <ToggleButton showLogin={showLogin} onToggle={handleToggle} /> 
                 </div>
             ) : (
-                <Mainpage  onLogout={handleLogout} currentUsername={username} />
+                <Mainpage  onLogout={handleLogout} currentUsername={username} userData={userData} />
             )}
             {isLoggedIn}
         </div>

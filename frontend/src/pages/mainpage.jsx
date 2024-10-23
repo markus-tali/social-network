@@ -7,11 +7,11 @@ import RightSidenav from '../components/rightsidenav.jsx';
 import MyPage from "../pages/mypage.jsx";
 import CreatePost from './createpost.jsx';
 
- function Mainpage({onLogout, currentUsername} ) {
+ function Mainpage({onLogout, currentUsername, userData} ) {
     const [isCreatingPost, setIsCreatingPost] = useState(false)
     const [shouldRefreshPosts, setShouldRefreshPosts] = useState(false)
     const [isMyPageVisible, setIsMyPageVisible] = useState(false); 
-    
+    console.log("Mainpage userdata: ", userData)
 
     const handlePostCreated = () => {
         console.log("Refreshing posts...")
@@ -51,7 +51,7 @@ import CreatePost from './createpost.jsx';
                 </div>
             )}
 
-            {isMyPageVisible && <MyPage />}
+            {isMyPageVisible && <MyPage userData={userData} />}
             </div>
 
             <Footer />
