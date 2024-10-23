@@ -10,7 +10,7 @@ CREATE TABLE users (
     avatar TEXT DEFAULT '',
     nickname TEXT DEFAULT '',
     aboutMe TEXT DEFAULT '',
-    isPrivate INTEGER DEFAULT 0,
+    isPrivate INTEGER DEFAULT 0, -- 0 for false, 1 for true 
     followedBy TEXT DEFAULT,
     isFollowing TEXT DEFAULT
 );
