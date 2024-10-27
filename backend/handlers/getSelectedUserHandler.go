@@ -6,29 +6,40 @@ import (
 	"net/http"
 
 	"main.go/backend/database/get"
+	"main.go/backend/helpers"
 )
 
-func SessionHandler(w http.ResponseWriter, r *http.Request) {
+func GetSelectedUserHandler(w http.ResponseWriter, r *http.Request) {
 	CorsEnabler(w, r)
 	if r.Method == "OPTIONS" {
 		return
 	}
 
-	isValid, username, err := GetCookies(w, r)
-	if err != nil || !isValid {
-		http.Error(w, "No valid session", http.StatusUnauthorized)
-		return
+	var userData struct {
+		Username string `json:"username"`
 	}
-	user, err := get.GetUserByUsernameOrEmail(username)
-	if err != nil || user == nil {
-		fmt.Println("error get user by nameoremail")
-		http.Error(w, "Username or email does not exist", http.StatusForbidden)
+
+	err := json.NewDecoder(r.Body).Decode(&userData)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// w.Write([]byte("User is logged in: " + username))
-	response := map[string]interface{}{
-		"isLoggedIn":  true,
+	username := userData.Username
+
+	fmt.Println("eh username ", username)
+
+	user, err := get.GetUserByUsernameOrEmail(username)
+
+	fmt.Println("Da user is: ", user)
+
+	if err != nil || user == nil {
+		helpers.CheckError(err)
+		return
+	}
+
+	sendData := map[string]interface{}{
 		"Username":    user.Username,
 		"Email":       user.Email,
 		"Firstname":   user.FirstName,
@@ -43,5 +54,9 @@ func SessionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(sendData)
+	if err != nil {
+		http.Error(w, "Failed to encode user data", http.StatusInternalServerError)
+		return
+	}
 }

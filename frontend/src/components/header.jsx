@@ -12,7 +12,7 @@ const Header =  ({onLogout, isCreatingPost, toggleCreatePost, toggleMyPage, isMy
     };
 
     const toggleButtons = () => {
-        setShowButtons(!showButtons);  // Toggle the state when clicking the image button
+        setShowButtons(!showButtons);  
     };
 
   
@@ -35,7 +35,7 @@ const Header =  ({onLogout, isCreatingPost, toggleCreatePost, toggleMyPage, isMy
 
                 <li className='headerlist'>
                     <button className='headerButton' onClick={toggleMyPage}>
-                        {isMyPageVisible ? 'Back' : 'MyPage'}
+                        {isMyPageVisible ? 'Back' : 'UserPage'}
                     </button>
                 </li>
                 <li className='headerlist'>

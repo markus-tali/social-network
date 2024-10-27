@@ -359,10 +359,12 @@ margin-left: 20px;
     color: #FFFFFF;
     font-size: 24px;
     margin-bottom: 10px;
+    overflow-wrap: anywhere;
 }
 .postsP, .postsPostedBy{
     color: #99AAB5;
     font-size: large;
+    overflow-wrap: anywhere;
     /* margin-bottom: 10px; */
 }
 .postsAvatarImg, .commentPicture{

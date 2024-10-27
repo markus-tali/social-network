@@ -7,6 +7,7 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 	"main.go/backend/database/get"
+	"main.go/backend/helpers"
 )
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,6 +33,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	user, err := get.GetUserByUsernameOrEmail(usernameOrEmail)
 	if err != nil || user == nil {
+		helpers.CheckError(err)
 		fmt.Println("error get user by nameoremail")
 		http.Error(w, "Username or email does not exist", http.StatusForbidden)
 		return
@@ -39,16 +41,19 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
+		helpers.CheckError(err)
 		fmt.Println("error compare pass")
 		http.Error(w, "Incorrect password", http.StatusUnauthorized)
 		return
 	}
 
+	fmt.Println("userdata: ", user)
+
 	fmt.Println("Received input in login: " + usernameOrEmail + " " + password)
 
 	SetCookies(w, r, user.Username)
 
-	userData := map[string]string{
+	userData := map[string]interface{}{
 		"Username":    user.Username,
 		"Email":       user.Email,
 		"Firstname":   user.FirstName,
@@ -57,6 +62,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		"Avatar":      user.Avatar,
 		"Nickname":    user.Nickname,
 		"AboutMe":     user.AboutMe,
+		"IsPrivate":   user.IsPrivate,
+		"FollowedBy":  user.FollowedBy,
+		"IsFollowing": user.IsFollowing,
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(userData)

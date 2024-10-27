@@ -22,6 +22,9 @@ func main() {
 	http.HandleFunc("/getusers", handlers.GetUsersHandler)
 	http.HandleFunc("/getmessages", handlers.GetMessagesHandler)
 	http.HandleFunc("/utils/avatar/", utils.ServeAvatar)
+	http.HandleFunc("/getselecteduser", handlers.GetSelectedUserHandler)
+	http.HandleFunc("/toggleuserprivacy", handlers.ToggleUserPrivacyHandler)
+	http.HandleFunc("/follow", handlers.FollowHandler)
 
 	fmt.Println("Backend server is running")
 
