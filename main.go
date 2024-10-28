@@ -25,6 +25,7 @@ func main() {
 	http.HandleFunc("/getselecteduser", handlers.GetSelectedUserHandler)
 	http.HandleFunc("/toggleuserprivacy", handlers.ToggleUserPrivacyHandler)
 	http.HandleFunc("/follow", handlers.FollowHandler)
+	http.HandleFunc("/unfollow", handlers.UnfollowHandler)
 
 	fmt.Println("Backend server is running")
 

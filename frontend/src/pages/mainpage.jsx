@@ -87,19 +87,19 @@ import CreatePost from './createpost.jsx';
         setIsCreatingPost(prevState => !prevState);
     };
     const handleFollow = async (currentUsername, username) => {
+        console.log("in handlefollow, users: ", currentUsername, username)
         try {
             const response = await fetch('http://localhost:8081/follow', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include', // Include cookies if needed
+                credentials: 'include',
                 body: JSON.stringify({ follower: currentUsername, followed: username }),
             });
     
             if (response.ok) {
                 console.log(`Successfully followed ${username}`);
-                // Optionally update state or trigger a re-fetch of user data if needed
             } else {
                 console.error(`Failed to follow ${username}`);
             }
@@ -109,9 +109,9 @@ import CreatePost from './createpost.jsx';
         console.log(`Following ${username}`);
     };
 
-    const handleUnfollow = async (currentUsrername, username) => {
+    const handleUnfollow = async (currentUsername, username) => {
         try {
-            const response = await fetch('http://localhost:8081/follow', {
+            const response = await fetch('http://localhost:8081/unfollow', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -242,12 +242,12 @@ margin-left: 20px;
     overflow-y: auto;
     padding: 5px;
 }
-.userListButton{
+.userListButton, .notificationButton{
     background-color:#7289DA;
     border: none;
     border-radius: 10px;
 }
-.userListImg{
+.userListImg, .notificationImg{
     height: 50px;
 
 }

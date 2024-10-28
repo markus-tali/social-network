@@ -16,10 +16,10 @@ const FollowButton = ({ user, currentUser,  onFollow, onUnfollow }) => {
 
     const handleFollowClick = async () => {
         if (isFollowing) {
-            await onUnfollow(user.Username);
+            await onUnfollow(currentUser, user.Username);
             setIsFollowing(false)
         } else {
-            await onFollow(user.Username);
+            await onFollow(currentUser, user.Username);
             setIsFollowing(true)
         }
     };

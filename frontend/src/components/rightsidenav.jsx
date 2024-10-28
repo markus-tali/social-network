@@ -8,6 +8,9 @@ function RightSidenav({fromUsername}) {
     const [selectedUser, setSelectedUser] = useState(null);
     const [messages, setMessages] = useState([]); 
     const [isUserListVisible, setIsUserListVisible] = useState(false)
+
+    const [hasNewNotification, setHasNewNotification] = useState(false)
+
     const [hasNewMessage, setHasNewMessage] = useState(false)
     const [newMessageUsers, setNewMessageUsers] = useState([])
     const [newMessageCount, setNewMessageCount] = useState({})
@@ -131,11 +134,14 @@ function RightSidenav({fromUsername}) {
 
     return (
         <div className='users'>
-        <button className='userListButton' onClick={toggleUserList}>
-        <img className='userListImg' src={hasNewMessage ? "src/assets/notifiation2.png" : "src/assets/notification1.png"} alt="messages" />
-        </button>
+            <button className='notificationButton'>
+              <img className='notificationImg' src={hasNewNotification ? "src/assets/notificationbell2.png" : "src/assets/notificationbell1.png"} alt="messages" />
+          </button>
+            <button className='userListButton' onClick={toggleUserList}>
+                <img className='userListImg' src={hasNewMessage ? "src/assets/notifiation2.png" : "src/assets/notification1.png"} alt="messages" />
+         </button>
         {isUserListVisible &&(
-<div>
+        <div>
             <h2>Userlist:</h2>
             <ul>
                 {users.length > 0 ? (
