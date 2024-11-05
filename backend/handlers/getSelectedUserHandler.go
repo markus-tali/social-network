@@ -28,11 +28,9 @@ func GetSelectedUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	username := userData.Username
 
-	fmt.Println("eh username ", username)
-
 	user, err := get.GetUserByUsernameOrEmail(username)
 
-	fmt.Println("Da user is: ", user)
+	// fmt.Println("Da user is: ", user)
 
 	if err != nil || user == nil {
 		helpers.CheckError(err)

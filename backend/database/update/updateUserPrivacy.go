@@ -28,10 +28,6 @@ func UpdateUserPrivacy(username string, isPrivate bool) {
 		newPrivacy = 1
 	}
 
-	fmt.Println("new privacy is: ", newPrivacy)
-
-	fmt.Printf("Toggling privacy for user %s to %d\n", username, newPrivacy)
-
 	// Suhtel Update query
 	query = `UPDATE users SET isPrivate = ? WHERE username = ?`
 
@@ -44,7 +40,7 @@ func UpdateUserPrivacy(username string, isPrivate bool) {
 	if rowsAffected == 0 {
 		fmt.Printf("No user with username '%s' found.\n", username)
 	} else {
-		fmt.Printf("Privacy setting updated for user %s to %d\n", username, newPrivacy)
+		// fmt.Printf("Privacy setting updated for user %s to %d\n", username, newPrivacy)
 	}
 
 }

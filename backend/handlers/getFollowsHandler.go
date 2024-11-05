@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"main.go/backend/database/get"
@@ -9,36 +10,33 @@ import (
 	"main.go/backend/structs"
 )
 
-func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
+func GetFollowsHandler(w http.ResponseWriter, r *http.Request) {
 	CorsEnabler(w, r)
 	if r.Method == "OPTIONS" {
 		return
 	}
 
 	type ResponseData struct {
-		Username string         `json:"username"`
-		Users    []structs.User `json:"users"`
+		Follows []structs.Follow `json:"follows"`
 	}
 
 	_, username, err := GetCookies(w, r)
-
+	fmt.Println("this is udername in getfollowshandler:", username)
 	helpers.CheckError(err)
 
-	users, err := get.GetAllUsers()
-
+	follows, err := get.GetFollows(username)
+	if err != nil {
+		http.Error(w, "Failed to get follows", http.StatusInternalServerError)
+		return
+	}
 	responseData := ResponseData{
-		Username: username,
-		Users:    users,
+		Follows: follows,
 	}
 
-	// fmt.Println("My username is: ", username)
-	helpers.CheckError(err)
-
-	jsonUsers, err := json.Marshal(responseData)
+	jsonFollows, err := json.Marshal(responseData)
 	if err != nil {
 		http.Error(w, "Error marshaling posts to JSON", http.StatusInternalServerError)
 		return
 	}
-
-	w.Write(jsonUsers)
+	w.Write(jsonFollows)
 }

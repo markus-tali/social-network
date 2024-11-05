@@ -9,4 +9,6 @@ type SMessage struct {
 	To               string
 	Date             string
 	ConnectedClients []string
+	NotificationId   string
+	GroupId          string
 }

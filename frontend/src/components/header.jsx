@@ -4,7 +4,7 @@ import MyPage from '../pages/mypage.jsx';
 import RightSidenav from '../components/rightsidenav.jsx';
 
 
-const Header =  ({onLogout, isCreatingPost, toggleCreatePost, toggleMyPage, isMyPageVisible, currentUsername}) => {
+const Header =  ({onLogout, isCreatingPost, toggleCreatePost, toggleMyPage, isMyPageVisible, currentUsername, toggleGroupPage}) => {
     const [showButtons, setShowButtons] = useState(false);
 
     const handleLogoutClick = () => {
@@ -14,6 +14,7 @@ const Header =  ({onLogout, isCreatingPost, toggleCreatePost, toggleMyPage, isMy
     const toggleButtons = () => {
         setShowButtons(!showButtons);  
     };
+
 
   
     return(
@@ -38,15 +39,22 @@ const Header =  ({onLogout, isCreatingPost, toggleCreatePost, toggleMyPage, isMy
                         {isMyPageVisible ? 'Back' : 'UserPage'}
                     </button>
                 </li>
+
                 <li className='headerlist'>
                     <button className='headerButton' onClick={toggleCreatePost} > 
                         {isCreatingPost ? 'Close post' : 'Create Post'}
                         </button>
                 </li>
+
+                <li className='headerlist'>
+                                <button className='headerButton' onClick={toggleGroupPage}> 
+                                    {isMyPageVisible ? ' Close Groups' : 'Create Groups'}
+                                </button>
+                            </li>
+
                 <li className='headerlist'>
                     <button className='headerButton' onClick={handleLogoutClick}>Log out</button>
                 </li>
-                <li className='headerlist'><a href="#home">Home</a></li>
                 <li className='headerlist'><a href="#about">About</a></li>
 
                 </div>

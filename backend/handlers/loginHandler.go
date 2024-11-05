@@ -47,10 +47,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("userdata: ", user)
-
-	fmt.Println("Received input in login: " + usernameOrEmail + " " + password)
-
 	SetCookies(w, r, user.Username)
 
 	userData := map[string]interface{}{
@@ -72,6 +68,4 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to encode user data", http.StatusInternalServerError)
 		return
 	}
-	c, _ := r.Cookie("accessToken")
-	fmt.Println("login cookie", c)
 }

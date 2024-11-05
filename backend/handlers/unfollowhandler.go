@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"main.go/backend/database/delete"
+	"main.go/backend/database/deletion"
 )
 
 func UnfollowHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,13 +26,19 @@ func UnfollowHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = delete.RemoveFollowing(userData.Follower, userData.Followed)
+	err = deletion.RemoveFollowing(userData.Follower, userData.Followed)
 	if err != nil {
 		http.Error(w, "Failed to unfollow user", http.StatusInternalServerError)
 		fmt.Println("Error unfollowing user:", err)
 		return
 	}
 
+	err = deletion.RemoveNotification(userData.Follower, userData.Followed)
+	if err != nil {
+		http.Error(w, "Failed to delete notification", http.StatusInternalServerError)
+		fmt.Println("Error deleting notification:", err)
+		return
+	}
 	fmt.Fprintln(w, "Unfollowed successfully")
 	fmt.Println("Unfollow request successful")
 }

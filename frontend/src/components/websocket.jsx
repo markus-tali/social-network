@@ -33,19 +33,36 @@ export function setupWebSocket(onMessageReceived) {
 }
 
 export function sendMessage(message) {
+  console.log("got in sendMessage")
   if (socket && socket.readyState === WebSocket.OPEN) {
-    console.log("message", JSON.stringify(message))
-     socket.send(JSON.stringify({
-      type: "message",
-      from: message.From,
-      to: message.To,
-      message: message.Message,
-      date: message.Date
-    }));
-    console.log("Made it here twice")
+    console.log("socket is open")
+    if (message.type === "acceptFollowRequest"){
+      console.log("hey, you have recieved a message: ", message)
+      socket.send(JSON.stringify(message))
+
+    } else if (message.type === "rejectFollowRequest") {
+      console.log("hey, you have received a reject follow request message:", message);
+      socket.send(JSON.stringify({
+        type: "rejectFollowRequest",
+        from: message.from,
+        to: message.to
+      }));
+
+    } else if (message.Type === "message"){
+      console.log("message", JSON.stringify(message))
+      socket.send(JSON.stringify({
+        type: "message",
+        from: message.From,
+        to: message.To,
+        message: message.Message,
+        date: message.Date
+      }));
+      console.log("Made it here twice")
+    }
   } else {
     console.error("WebSocket is not open. Ready state:", socket.readyState);
   }
+  return socket
 }
 
 export default setupWebSocket

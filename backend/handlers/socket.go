@@ -2,11 +2,15 @@ package handlers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"strconv"
 	"sync"
 
 	"github.com/gorilla/websocket"
+	"main.go/backend/database/deletion"
 	"main.go/backend/database/set"
+	"main.go/backend/database/update"
 	"main.go/backend/helpers"
 	"main.go/backend/structs"
 )
@@ -32,22 +36,16 @@ func handleMessages() {
 	for {
 
 		sms := <-broadcast
-		fmt.Println("mis on siis see:", sms.From)
-		fmt.Println("Sõnumi saaja:", sms.To)
-		fmt.Println("Sõnumi tekst: ", sms.Message)
-		fmt.Println("Sõnumi kes: ", sms.ConnectedClients)
+
 		switch sms.Type {
 		case "message":
 
 			set.InsertMessage(sms.From, sms.To, sms.Message, sms.Date)
 			for client := range clientConnections {
-				// fmt.Println("Kliendi ID:", client.connOwnerId)
-				//sms.To ja client.connOwnerId väärtused peavad olema samad
 				fmt.Printf("sms.To: %s, client.connOwnerId: %s\n", sms.To, client.connOwnerId)
 				if sms.To == client.connOwnerId {
 
 					client.mu.Lock()
-					// fmt.Printf("Saadan sõnumi kasutajale: %s\n", client.connOwnerId)
 
 					err := client.connection.WriteJSON(sms)
 					if err != nil {
@@ -63,6 +61,82 @@ func handleMessages() {
 				}
 			}
 
+		case "followRequest":
+			fmt.Println("gotinfollowrequest")
+			for client := range clientConnections {
+				if sms.To == client.connOwnerId { // Only notify the intended user
+					client.mu.Lock()
+					err := client.connection.WriteJSON(sms)
+					if err != nil {
+						fmt.Println("WebSocket error sending follow request:", err)
+						client.connection.Close()
+						delete(clientConnections, client)
+					}
+					client.mu.Unlock()
+				}
+			}
+		case "acceptFollowRequest":
+			fmt.Printf("Accepting follow request from %s to %s\n", sms.From, sms.To)
+			err := update.UpdateFollowRequestStatus(sms.From, sms.To, "accepted")
+			if err != nil {
+				fmt.Println("Error updating follow request:", err)
+				return
+			}
+			err = deletion.RemoveNotification(sms.From, sms.To)
+			if err != nil {
+				fmt.Println("Error updating follow request:", err)
+				return
+			}
+			for client := range clientConnections {
+				if sms.To == client.connOwnerId { // Only notify the intended user
+					client.mu.Lock()
+					defer client.mu.Unlock()
+					err := client.connection.WriteJSON(structs.SMessage{
+						Type: "acceptFollowRequest",
+						From: sms.From,
+						To:   sms.To,
+					})
+					if err != nil {
+						fmt.Println("WebSocket error:", err)
+						client.connection.Close()
+						delete(clientConnections, client)
+					}
+				}
+			}
+		case "rejectFollowRequest":
+			fmt.Printf("Rejecting follow request from %s to %s\n", sms.From, sms.To)
+			err := update.UpdateFollowRequestStatus(sms.From, sms.To, "reject")
+			if err != nil {
+				fmt.Println("Error updating follow request:", err)
+				return
+			}
+			err = deletion.RemoveNotification(sms.From, sms.To)
+			if err != nil {
+				fmt.Println("Error updating follow request:", err)
+				return
+			}
+		case "groupInvitation":
+			fmt.Println("Inviting into group!")
+			fmt.Println("in group invitation", sms)
+			groupID, err := strconv.Atoi(sms.GroupId)
+			if err != nil {
+				log.Printf("Error converting GroupId to integer: %v", err)
+				return // or handle the error appropriately
+			}
+			set.AddGroupMember(groupID, sms.To, "pending")
+			for client := range clientConnections {
+				if sms.To == client.connOwnerId { // Only notify the intended user
+					client.mu.Lock()
+					err := client.connection.WriteJSON(sms)
+					if err != nil {
+						fmt.Println("WebSocket error sending follow request:", err)
+						client.connection.Close()
+						delete(clientConnections, client)
+					}
+					client.mu.Unlock()
+				}
+			}
+		case "acceptInviteMessage":
 		}
 	}
 }
@@ -76,7 +150,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 	go handleMessages()
 
 	_, username, err := GetCookies(w, r)
-	fmt.Println("sock username", username)
+	// fmt.Println("sock username", username)
 	helpers.CheckError(err)
 
 	client := &Client{
@@ -87,9 +161,9 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 
 	clientConnections[client] = true
 
-	for client := range clientConnections {
-		fmt.Println("The clients are: ", client)
-	}
+	// for client := range clientConnections {
+	// 	fmt.Println("The clients are: ", client)
+	// }
 
 	defer func() {
 		client.connection.Close()

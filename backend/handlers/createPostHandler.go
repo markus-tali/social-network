@@ -17,7 +17,6 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	_, username, err := GetCookies(w, r)
 	helpers.CheckError(err)
-	fmt.Println("username in createpost:", username)
 
 	// Parse the multipart form data (because of avatar files)
 	err = r.ParseMultipartForm(10 << 20) // Limit your file size (e.g., 10MB)
@@ -30,19 +29,9 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	postTitle := r.FormValue("title")
 	postText := r.FormValue("content")
 	postPrivacy := r.FormValue("privacy")
-	fmt.Println(postTitle, postText, postPrivacy)
 
 	//read avatar formvalue
 	avatarPath := utils.GetAvatars(username, w, r)
-
-	if avatarPath == "" {
-		fmt.Println("No avatar uploaded")
-	} else {
-		fmt.Println("Avatar uploaded at:", avatarPath)
-	}
-
-	fmt.Println("Post title is: ", postTitle, "Post content is: ", postText)
-	fmt.Println("username for post", username)
 
 	set.InsertPost(username, postTitle, postText, postPrivacy, avatarPath)
 	w.WriteHeader(http.StatusOK)

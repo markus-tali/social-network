@@ -9,21 +9,26 @@ function RightSidenav({fromUsername}) {
     const [messages, setMessages] = useState([]); 
     const [isUserListVisible, setIsUserListVisible] = useState(false)
 
-    const [hasNewNotification, setHasNewNotification] = useState(false)
+    const [hasNewNotification, setHasNewNotification] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+    console.log("notifcation: ", notifications)
+    const [isNotificationDropdownVisible, setIsNotificationDropdownVisible] = useState(false);
 
     const [hasNewMessage, setHasNewMessage] = useState(false)
     const [newMessageUsers, setNewMessageUsers] = useState([])
     const [newMessageCount, setNewMessageCount] = useState({})
 
+    const [isFollowingPrivateUser, setIsFollowingPrivateUser] = useState(false);
+
+    
+
     useEffect(() => {
         const socket = setupWebSocket((message) => {
+            console.log("Received WebSocket message:", message); // Logime kõik sõnumid
+            console.log("Message type:", message.Type); // Logime sõnumi tüübi
 
-            console.log("Sõnum saabus websocketist: ", message)
-            console.log("sonumi tyopr:", message.Type)
-            console.log("sonumi saab:", message.To, "mina olen:", fromUsername)
             if (message.Type === "message" && message.To === fromUsername) {
                 // Kui sõnum on mõeldud praegusele kasutajale, lisa see sõnumite loendisse
-                console.log("sõnum saabus?")
                 setMessages((prevMessages) => [...prevMessages, message]);
 
                 if (!selectedUser || message.From !== selectedUser.username) {
@@ -35,12 +40,55 @@ function RightSidenav({fromUsername}) {
                     setHasNewMessage(true); // New message from a user you're not chatting with
                 }
             }
+            if (message.Type ==="followRequest"){
+                console.log("HURRAY, got in here!")
+                setNotifications((prev) => [...prev, message])
+                setHasNewNotification(true)
+            }
+            if (message.Type === "groupInvitation"){
+                console.log("Hello, matey!")
+                setNotifications((prev) => [...prev, message])
+                setHasNewNotification(true)
+            }
+            if (message.Type === "acceptFollowRequest" && message.To === fromUsername) {
+                console.log("Got in here to refresh page")
+                // Handle immediate access to the private profile
+                setIsFollowingPrivateUser(true);
+                // Fetch the profile data or trigger a UI refresh as needed
+            }
         });
 
-        return () => socket.close(); // Puhastame WebSocketi ühenduse komponenti sulgedes
+        return () => {
+            if (socket && socket.close) {
+                socket.close(); // Close the socket if it exists
+            }
+        };
+    ; // Puhastame WebSocketi ühenduse komponenti sulgedes
     }, [fromUsername, selectedUser]); // Jooksuta WebSocketi ühendus kasutaja nime põhjal
 
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                console.log("fetching notificatons")
+                const response = await fetch(`http://localhost:8081/getnotifications`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username: fromUsername }) // saadame kasutajanime kehas
+                });
+            const oldNotifications = await response.json() || []
 
+                console.log("Fetched notifications: ", oldNotifications);
+                setNotifications(oldNotifications || []);
+                setHasNewNotification(oldNotifications.length > 0);
+            } catch (error) {
+                console.error("Error fetching notifications:", error);
+            }
+        };
+        fetchNotifications();
+    }, [fromUsername]);
+    
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -115,6 +163,7 @@ function RightSidenav({fromUsername}) {
         if (!selectedUser) return;
 
         const newMessage = {
+            Type: "message",
             From: fromUsername,
             Message: messageContent,
             To: selectedUser.username,
@@ -125,21 +174,92 @@ function RightSidenav({fromUsername}) {
         
         sendMessage(newMessage)
 
-        setMessages((prevMessages) => [...prevMessages, newMessage]); // Append the new message for local user
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+    };
+
+
+    const handleAcceptNotification = async (FromUsername, ToUsername) => {
+        const acceptFollowMessage = {
+            type: "acceptFollowRequest",
+            from: FromUsername,
+            to: ToUsername,
+        };
+        sendMessage(acceptFollowMessage);
+    
+        // Optionally update the UI
+        setNotifications((prev) => {
+            const updatedNotifications = prev.filter((n) => n.From !== FromUsername);
+            setHasNewNotification(updatedNotifications.length > 0); // Update icon if no more notifications
+            return updatedNotifications;
+        });
+        
+    };
+
+    const handleRejectNotification = async (FromUsername, ToUsername) => {
+        const rejectFollowMessage = {
+            type: "rejectFollowRequest",
+            from: FromUsername,
+            to: ToUsername,
+        };
+        sendMessage(rejectFollowMessage);
+
+        setNotifications((prev) => {
+            const updatedNotifications = prev.filter((n) => n.From !== FromUsername);
+            setHasNewNotification(updatedNotifications.length > 0); // Update icon if no more notifications
+            return updatedNotifications;
+        });;
     };
 
     const toggleUserList = () => {
         setIsUserListVisible(!isUserListVisible)
     }
 
+    const toggleNotificationDropdown = () => {
+        setIsNotificationDropdownVisible(!isNotificationDropdownVisible);
+
+    };
+    
+
     return (
         <div className='users'>
-            <button className='notificationButton'>
+            <button className='notificationButton' onClick={toggleNotificationDropdown}>
               <img className='notificationImg' src={hasNewNotification ? "src/assets/notificationbell2.png" : "src/assets/notificationbell1.png"} alt="messages" />
           </button>
+
+          {isNotificationDropdownVisible && (
+    <div className="notificationDropdown">
+        <h4>Notifications</h4>
+        {notifications.length === 0 ? (
+            <p>No notifications</p>
+        ) : (
+            <ul>
+                {notifications.map((notification, index) => (
+                    <li key={index}>
+                        {notification.Type === "followRequest" && (
+                            <>
+                                {notification.From} wants to follow you.
+                                <button onClick={() => handleAcceptNotification(notification.From, notification.To)}>Accept</button>
+                                <button onClick={() => handleRejectNotification(notification.From, notification.To)}>Reject</button>
+                            </>
+                        )}
+                        {notification.Type === "groupInvitation" && (
+                            <>
+                                {notification.From} invited you to join group {notification.GroupName || "a group"}.
+                                <button onClick={() => handleAcceptGroupInvite(notification.GroupId)}>Accept</button>
+                                <button onClick={() => handleRejectGroupInvite(notification.GroupId)}>Reject</button>
+                            </>
+                        )}
+                    </li>
+                ))}
+            </ul>
+        )}
+    </div>
+)}
+
             <button className='userListButton' onClick={toggleUserList}>
                 <img className='userListImg' src={hasNewMessage ? "src/assets/notifiation2.png" : "src/assets/notification1.png"} alt="messages" />
          </button>
+
         {isUserListVisible &&(
         <div>
             <h2>Userlist:</h2>

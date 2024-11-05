@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
+	"main.go/backend/database/get"
 	"main.go/backend/database/set"
-	"main.go/backend/helpers"
+	"main.go/backend/structs"
 )
 
 func FollowHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,10 +28,40 @@ func FollowHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("userdata is lolol: ", userData)
+	// fmt.Println("userdata is lolol: ", userData)
 
-	err = set.InsertFollowing(userData.Follower, userData.Followed)
-	helpers.CheckError(err)
+	isPrivate, err := get.GetUserPrivacy(userData.Followed)
+	if err != nil {
+		fmt.Println("in isprivate lol:", err)
+		return
+	}
 
-	fmt.Println("Good job this went through lol")
+	if isPrivate {
+		// Private - Lisa `pending` staatuses follow ja teavitus
+		err = set.InsertFollowing(userData.Follower, userData.Followed, "pending")
+		if err != nil {
+			fmt.Println("Cant send notification!")
+			return
+		}
+		fmt.Fprintf(w, "Follow request sent")
+
+		// Broadcast follow request message
+		followRequest := structs.SMessage{
+			Type: "followRequest",
+			From: userData.Follower,
+			To:   userData.Followed,
+			Date: time.Now().Format("2006-01-02 15:04:05"),
+		}
+		broadcast <- followRequest
+
+		fmt.Fprintf(w, "Follow request sent")
+	} else {
+		// Public - Lisa `accepted` staatuses follow
+		err = set.InsertFollowing(userData.Follower, userData.Followed, "accepted")
+		if err != nil {
+			http.Error(w, "Failed to follow user", http.StatusInternalServerError)
+			return
+		}
+		fmt.Fprintf(w, "Follow successful")
+	}
 }

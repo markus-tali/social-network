@@ -74,8 +74,6 @@ func SetCookies(w http.ResponseWriter, r *http.Request, username string) {
 
 	var existingSessionToken string
 
-	fmt.Println("Sess token: ", sessionToken)
-
 	DB.QueryRow("SELECT cookie FROM sessions WHERE cookie = ?", sessionToken).Scan(&existingSessionToken)
 
 	if err == sql.ErrNoRows {
@@ -86,13 +84,11 @@ func SetCookies(w http.ResponseWriter, r *http.Request, username string) {
 		}
 	} else {
 		// Existing session found, delete it first
-		fmt.Println("Deleting session")
 		_, err = DB.Exec("DELETE FROM sessions WHERE username = ?", username)
 		if err != nil {
 			fmt.Println("Error deleting existing session:", err)
 			return
 		}
-		fmt.Println("existing sess: ", existingSessionToken)
 		_, err = DB.Exec("INSERT INTO sessions (username, cookie, expiresAt) VALUES (?, ?, ?)", username, sessionToken, expiry)
 		if err != nil {
 			fmt.Println("error thingy", err, "Error thingy back")
@@ -102,8 +98,6 @@ func SetCookies(w http.ResponseWriter, r *http.Request, username string) {
 	}
 
 	Sessions[sessionToken] = username
-
-	fmt.Println("Session token is created or updated:", sessionToken, "for user", username)
 
 }
 

@@ -4,8 +4,9 @@ import Footer from "../components/footer.jsx";
 import Postlist from '../components/postlist.jsx';
 import MyPage from "../pages/mypage.jsx";
 import CreatePost from './createpost.jsx';
+import GroupPage from "./grouppage.jsx";
 
- function Mainpage({onLogout, currentUsername, userData} ) {
+ function Mainpage({onLogout, currentUsername, userData, websocket} ) {
     const [users, setUsers] = useState([]);
 
     const [isCreatingPost, setIsCreatingPost] = useState(false)
@@ -16,6 +17,8 @@ import CreatePost from './createpost.jsx';
     const [selectedUser, setSelectedUser] = useState(null);
 
     const [isPrivate, setIsPrivate] = useState(userData.IsPrivate || false);
+
+    const [isGroupPageVisible, setIsGroupPageVisible] = useState(false);
 
     console.log("Mainpage userdata: ", userData)
     
@@ -55,6 +58,12 @@ import CreatePost from './createpost.jsx';
         setSelectedUser(null); // Tühjendame valitud kasutaja
         setIsMyPageVisible(false); // Lülitame profiili lehe välja
     };
+    const toggleGroupPage = () => {
+        setIsGroupPageVisible(prevState => !prevState);
+        setIsUserListVisible(false);
+        setIsMyPageVisible(false);
+    };
+
 
     const handleUserClick = async (user) => {
         console.log("Selected user:", user.username);
@@ -86,6 +95,7 @@ import CreatePost from './createpost.jsx';
    const toggleCreatePost = () => {
         setIsCreatingPost(prevState => !prevState);
     };
+    
     const handleFollow = async (currentUsername, username) => {
         console.log("in handlefollow, users: ", currentUsername, username)
         try {
@@ -139,43 +149,57 @@ import CreatePost from './createpost.jsx';
                 isCreatingPost={isCreatingPost} 
                 toggleCreatePost={toggleCreatePost} 
                 toggleMyPage={toggleUserList}
-                isMyPageVisible={isUserListVisible || isMyPageVisible} 
+                isMyPageVisible={isUserListVisible || isMyPageVisible || isGroupPageVisible} 
                 currentUsername={currentUsername}
+                toggleGroupPage={toggleGroupPage} 
+                
             />
-
+    
             <div className='chatBoxDiv'>
-                {isUserListVisible && (
-                    <div className="user-list">
-                        <h2>Select a user to view their profile:</h2>
-                        <ul>
-                            {users.map((user) => (
-                                <li key={user.Id}>
-                                    <button onClick={() => handleUserClick(user)}>
-                                        {user.username}
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
-
-                {isMyPageVisible && selectedUser && (
-                    <MyPage userData={selectedUser} currentUsername={currentUsername} onFollow={handleFollow} onUnfollow={handleUnfollow}/> 
-                )}
-
-                {!isMyPageVisible && !isUserListVisible && (
-                    <div className='try'>
-                        {isCreatingPost ? (
-                            <CreatePost onPostCreated={handlePostCreated} />
-                        ) : (
-                            <Postlist refreshTrigger={shouldRefreshPosts} />
+                {isGroupPageVisible ? (
+                    <GroupPage userData = {userData} websocket={websocket}/> // Only show GroupPage if isGroupPageVisible is true
+                ) : (
+                    <>
+                        {isUserListVisible && (
+                            <div className="user-list">
+                                <h2>Select a user to view their profile:</h2>
+                                <ul>
+                                    {users.map((user) => (
+                                        <li key={user.Id}>
+                                            <button onClick={() => handleUserClick(user)}>
+                                                {user.username}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         )}
-                    </div>
+    
+                        {isMyPageVisible && selectedUser && (
+                            <MyPage 
+                                userData={selectedUser} 
+                                currentUsername={currentUsername} 
+                                onFollow={handleFollow} 
+                                onUnfollow={handleUnfollow}
+                            /> 
+                        )}
+    
+                        {!isMyPageVisible && !isUserListVisible && (
+                            <div className='try'>
+                                {isCreatingPost ? (
+                                    <CreatePost onPostCreated={handlePostCreated} />
+                                ) : (
+                                    <Postlist refreshTrigger={shouldRefreshPosts} />
+                                )}
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
-
+    
             <Footer />
         </div>
     );
+    
 }
 export default Mainpage

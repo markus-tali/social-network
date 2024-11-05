@@ -10,16 +10,11 @@ import (
 
 func ServeAvatar(w http.ResponseWriter, r *http.Request) {
 	filePath := filepath.Join("backend/database/assets", filepath.Base(r.URL.Path))
-	fmt.Println(r.URL.Path)
-	fmt.Println(filePath)
 	fileInfo, err := os.Stat(filePath)
-	fmt.Println("servubg avaar")
 	if os.IsNotExist(err) {
-		fmt.Println("file nt forhj ")
 		http.Error(w, "File not found", http.StatusNotFound)
 		return
 	}
-	fmt.Println("servubg avaar")
 
 	ext := filepath.Ext(fileInfo.Name())
 	mimeType := "image/jpeg"
@@ -29,7 +24,6 @@ func ServeAvatar(w http.ResponseWriter, r *http.Request) {
 	case ".gif":
 		mimeType = "image/gif"
 	}
-	fmt.Println(ext, filePath)
 
 	w.Header().Set("Content-Type", mimeType)
 	http.ServeFile(w, r, filePath)
@@ -41,11 +35,8 @@ func GetAvatars(username string, w http.ResponseWriter, r *http.Request) string 
 	file, fileHeader, err := r.FormFile("avatar")
 	if err != nil {
 		fmt.Println("Error retrieving the file:", err)
-		fmt.Println("here at avatar")
 		return ""
 	}
-
-	fmt.Printf("Received file: %s, Size: %d bytes\n", fileHeader.Filename, fileHeader.Size)
 
 	var avatarPath string
 	if err == nil {
@@ -64,7 +55,6 @@ func GetAvatars(username string, w http.ResponseWriter, r *http.Request) string 
 		// Create a unique file name
 		fileName := fmt.Sprintf("%s_%s", username, fileHeader.Filename)
 		avatarPath = filepath.Join(uploadDir, fileName)
-		fmt.Println(avatarPath)
 
 		// Create the file in the uploads directory
 		outFile, err := os.Create(avatarPath)

@@ -21,7 +21,6 @@ func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("this is the error:", err)
 		helpers.CheckError(err)
 	}
-	fmt.Println("username string is here:", username)
 
 	// Parse the multipart form data (because of avatar files)
 	err = r.ParseMultipartForm(10 << 20) // Limit your file size (e.g., 10MB)
@@ -33,20 +32,9 @@ func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 	postId := r.FormValue("postId")
 	content := r.FormValue("content")
-	fmt.Println("gotem:", content, postId)
 
 	// //read avatar formvalue
 	avatarPath := utils.GetAvatars(username, w, r)
-
-	if avatarPath == "" {
-		fmt.Println("No avatar uploaded")
-	} else {
-		fmt.Println("Avatar uploaded at:", avatarPath)
-	}
-
-	fmt.Println("Comment is: ", content)
-
-	fmt.Println("postId, username, content, avatar Path:", postId, username, content, avatarPath)
 
 	set.InsertComment(postId, username, content, avatarPath)
 	w.WriteHeader(http.StatusOK)

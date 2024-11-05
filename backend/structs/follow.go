@@ -5,4 +5,5 @@ type Follow struct {
 	FollowerUsername string `json:"follower_username"`
 	FollowedUsername string `json:"followed_username"`
 	Status           string `json:"status"`
+	NotificationId   string `json:"notificationid"`
 }

@@ -11,29 +11,30 @@ const App = () => {
     const [userData, setUserData] = useState(null)
     const[username, setUsername] = useState(null)
     const [messages, setMessages] = useState([])
-
+    const [socket, setSocket] = useState(null)
+    
     const handleIncomingMessage = (message) => {
         setMessages((prevMessages) => [...prevMessages, message.content])
     }
-
+    
     useEffect(() => {
         console.log("checking seessoin")
         checkSession();
         console.log("sesoins chekes")
     },[])
-
+    
     useEffect(() => {
-        let socket
         if (isLoggedIn) {
-          const socket = setupWebSocket(handleIncomingMessage);
+            const newSocket = setupWebSocket(handleIncomingMessage);
+            setSocket(newSocket);
+            return () => {
+                if (newSocket.readyState === WebSocket.OPEN) {
+                    newSocket.close();
+                }
+            };
         }
-          return () => {
-            if (socket && socket.readyState === WebSocket.OPEN) {
-              socket.close();
-            }
-          };
-        
-      }, [isLoggedIn]);
+    }, [isLoggedIn]);
+    
 
       useEffect(() => {
         if(!isLoggedIn){
@@ -100,7 +101,7 @@ const App = () => {
                     <ToggleButton showLogin={showLogin} onToggle={handleToggle} /> 
                 </div>
             ) : (
-                <Mainpage  onLogout={handleLogout} currentUsername={username} userData={userData} />
+                <Mainpage  onLogout={handleLogout} currentUsername={username} userData={userData} websocket={socket}/>
             )}
             {isLoggedIn}
         </div>
