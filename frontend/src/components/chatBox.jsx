@@ -56,7 +56,7 @@ const MessageInput = ({ onSendMessage }) => {
                 onChange={handleChange}
                 required
             />
-            <button type="submit">Send</button>
+            <button className='messageButton' type="submit">Send</button>
         </form>
     );
 };

@@ -254,6 +254,24 @@ margin-left: 20px;
 
 }
 
+/* chatbox */
+
+.messageButton{
+    background-color: #7289DA;
+    color: #FFFFFF;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+.messageButton:focus{
+    background-color: #32353B;
+
+}
+
 /* Main page */
 .mainpage {
     display: flex;

@@ -210,6 +210,22 @@ function RightSidenav({fromUsername}) {
         });;
     };
 
+    const handleAcceptGroupInvite = async (FromUsername, ToUsername) => {
+        const acceptInviteMessage = {
+            type: "acceptInviteMessage",
+            from: FromUsername,
+            to: ToUsername
+        }
+        sendMessage(acceptInviteMessage);
+    
+        // Optionally update the UI
+        setNotifications((prev) => {
+            const updatedNotifications = prev.filter((n) => n.From !== FromUsername);
+            setHasNewNotification(updatedNotifications.length > 0); // Update icon if no more notifications
+            return updatedNotifications;
+        });
+    }
+
     const toggleUserList = () => {
         setIsUserListVisible(!isUserListVisible)
     }
