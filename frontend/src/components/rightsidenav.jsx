@@ -277,13 +277,13 @@ function RightSidenav({fromUsername}) {
          </button>
 
         {isUserListVisible &&(
-        <div>
+        <div className='isUserListsVisible'>
             <h2>Userlist:</h2>
-            <ul>
+            <ul className='userListsUl'>
                 {users.length > 0 ? (
                     users.map((user) => (
-                        <li key={user.Id}>
-                            <button  onClick={() => handleUserClick(user)}>
+                        <li  key={user.Id}>
+                            <button className='userListsButton'  onClick={() => handleUserClick(user)}>
                             <span style={{ fontWeight: newMessageUsers.includes(user.username) ? 'bold' : 'normal' }}>
                                             {user.username}
                                             {newMessageCount[user.username] > 0 && (

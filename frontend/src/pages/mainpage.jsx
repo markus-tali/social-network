@@ -163,10 +163,10 @@ import GroupPage from "./grouppage.jsx";
                         {isUserListVisible && (
                             <div className="user-list">
                                 <h2>Select a user to view their profile:</h2>
-                                <ul>
+                                <ul className='user-listUl'>
                                     {users.map((user) => (
-                                        <li key={user.Id}>
-                                            <button onClick={() => handleUserClick(user)}>
+                                        <li  key={user.Id}>
+                                            <button className='userProfileView' onClick={() => handleUserClick(user)}>
                                                 {user.username}
                                             </button>
                                         </li>

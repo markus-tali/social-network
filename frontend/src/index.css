@@ -231,6 +231,25 @@ margin-left: 20px;
     padding: 10px;
     display: flex;
     flex-direction: row;
+
+}
+.userListsUl{
+    list-style: none;
+}
+.userListsButton{
+    background-color: #7289DA; 
+    color: #FFFFFF; 
+    padding: 6px; 
+    border: none; 
+    border-radius: 5px;
+    font-size: 16px; 
+    cursor: pointer;
+    transition: background-color 0.3s ease; 
+    width: 100%;
+    margin:5px 0;
+}
+.userListsButton:hover {
+    background-color: #99AAB5;
 }
 .chatWindow{
     background-color: #2C2F33;
@@ -285,6 +304,26 @@ margin-left: 20px;
 .chatBoxDiv{
     display: flex;
     flex-direction: row-reverse;
+}
+.user-listUl{
+       list-style: none;
+}
+
+.userProfileView{
+    background-color: #7289DA;
+    color: #FFFFFF;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-bottom: 2px;
+}
+.userProfileView:hover{
+    background-color: #32353B;
+
 }
 
 /* createpost */
@@ -524,3 +563,52 @@ margin-left: 20px;
   .slider.round:before {
     border-radius: 50%;
   }
+
+  /* group Page */
+  .groupPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #2f3136; 
+    color: #ffffff; 
+    height: 100vh;    
+}
+.groupPageInput, .groupPageTextArea{
+    width: 100%; 
+    padding: 10px; 
+    margin: 10px 0; 
+    border: 1px solid #4f545c; 
+    border-radius: 5px;
+    background-color: #40444b; 
+    color: #ffffff;
+    resize: none;
+}
+.groupPageTextArea{
+    height: 20vw;
+}
+.groupPageButton{
+    background-color: #7289da;
+    color: white;
+    border: none; 
+    padding: 10px; 
+    cursor: pointer; 
+    margin: 5px 0; 
+    width: 100%; 
+    border-radius: 5px;
+}
+.groupPage button:hover {
+    background-color: #5b6eae;
+}
+.groupButtons{
+    background-color: #7289da;
+    color: white;
+    border: none; 
+    cursor: pointer;
+    margin: 5px 0;
+    width: 70%;
+    border-radius: 5px;
+}
+.groupButton:hover {
+    background-color: #5b6eae; 
+}

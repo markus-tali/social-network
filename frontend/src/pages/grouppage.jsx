@@ -10,6 +10,7 @@ const GroupPage = ({userData, websocket}) => {
 
     const [groups, setGroups] = useState([])
     const [selectedGroup, setSelectedGroup] = useState(null);
+    const [isGroupsVisible, setIsGroupsVisible] = useState(false);
 
     const handleCreateGroup = async () => {
         try {
@@ -62,38 +63,40 @@ const GroupPage = ({userData, websocket}) => {
     const handleBackToGroups = () => {
         setSelectedGroup(null);
     };
+    const toggleGroupsVisibility = () => {
+        setIsGroupsVisible((prev) => !prev); // Vaheta gruppide nähtavust
+    };
 
   return (
-    <div>
+    <div className='groupPage'>
     {selectedGroup ? (
         <GroupOwnPage ourUserData={userData} group={selectedGroup} onClose={handleBackToGroups} websocket={websocket} />
     ) : (
         <>
-            <h1>Create a New Group</h1>
-            <input
+            <h1 className='groupPageH1'>Create a New Group</h1>
+            <input className='groupPageInput'
                 type="text"
                 placeholder="Group Title"
                 value={newGroupTitle}
                 onChange={(e) => setNewGroupTitle(e.target.value)}
             />
-            <textarea
+            <textarea className='groupPageTextArea'
                 placeholder="Group Description"
                 value={newGroupDescription}
                 onChange={(e) => setNewGroupDescription(e.target.value)}
             />
 
 
-            <button onClick={handleCreateGroup}>Create Group</button>
+            <button className='groupPageButton' onClick={handleCreateGroup}>Create Group</button>
             {error && <p className="error">{error}</p>}
 
             <div>
-                <h3>Groups</h3>
+                <h3 className='groupPageH3' onClick={toggleGroupsVisibility}>Groups</h3>
                 {groups.length > 0 ? (
                     <ul>
                         {groups.map((group) => (
-                            <button key={group.id} onClick={() => handleGroupClick(group)}>
+                            <button className='groupButtons' key={group.id} onClick={() => handleGroupClick(group)}>
                                 <h4>{group.title}</h4>
-                                <p>{group.description}</p>
                             </button>
                         ))}
                     </ul>
