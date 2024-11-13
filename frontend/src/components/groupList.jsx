@@ -1,11 +1,35 @@
 import React, {useState, useEffect} from 'react'
+import MessageInput from "./chatBox";
+import { sendMessage } from './websocket';
+import setupWebSocket from './websocket';
 
-const GroupList = () => {
+
+const GroupList = ({ourUsername}) => {
     const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  console.log("Here should be the groupMessages: ", messages)
+
+useEffect(() => {
+  const socket = setupWebSocket((message) => {
+    console.log("recieved message::::::", message)
+    if (message.Type === "groupMessage"){
+    console.log("recieved message::::::43214", message)
+
+      setMessages((prevMessages) => [...prevMessages, message]);
+    }
+  })
+  return () => {
+    if (socket && socket.close) {
+        socket.close(); // Close the socket if it exists
+    }
+};
+; // Puhastame WebSocketi ühenduse komponenti sulgedes
+}, [selectedGroup])
+
 
   const fetchGroups = async () => {
     try {
@@ -22,31 +46,49 @@ const GroupList = () => {
     }
   };
 
-  const fetchGroupMessages = async (groupId) => {
-    setLoading(true);
-    try {
-      const response = await fetch(`http://localhost:8081/api/group/messages?groupId=${groupId}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch group messages');
-      }
-      const data = await response.json();
-      setMessages(data);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleSendMessage = (messageContent) => {
+    if (!selectedGroup) return;
+
+    const newMessage = {
+        Type: "groupMessage",
+        From: ourUsername,
+        Message: messageContent,
+        Group_id: parseInt(selectedGroup.id,10),
+        Date: new Date().toLocaleString(),
+    };
+
+    
+    sendMessage(newMessage)
+
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
+};
+
+
+  // const fetchGroupMessages = async (groupId) => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetch(`http://localhost:8081/api/group/messages?groupId=${groupId}`);
+  //     if (!response.ok) {
+  //       throw new Error('Failed to fetch group messages');
+  //     }
+  //     const data = await response.json();
+  //     setMessages(data);
+  //   } catch (error) {
+  //     setError(error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     fetchGroups();
   }, []);
 
-  useEffect(() => {
-    if (selectedGroup) {
-      fetchGroupMessages(selectedGroup.id);
-    }
-  }, [selectedGroup]);
+  // useEffect(() => {
+  //   if (selectedGroup) {
+  //     fetchGroupMessages(selectedGroup.id);
+  //   }
+  // }, [selectedGroup]);
 
   if (loading) {
     return <p>Loading groups...</p>;
@@ -80,15 +122,15 @@ const GroupList = () => {
             {messages.length > 0 ? (
               messages.map((message) => (
                 <div key={message.id}>
-                  <strong>{message.sender}</strong>: {message.message}
-                  <small> - {message.timestamp}</small>
+                  <strong>{message.From}</strong>: {message.Message}
+                  <small> - {message.Date}</small>
                 </div>
               ))
             ) : (
               <p>No messages</p>
             )}
           </div>
-          <MessageInput groupId={selectedGroup.id} onSendMessage={fetchGroupMessages} />
+          <MessageInput groupId={selectedGroup.id} onSendMessage={handleSendMessage} />
         </div>
       )}
     </div>

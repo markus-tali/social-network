@@ -96,6 +96,11 @@ export function sendMessage(message) {
         Date: message.Date
       }));
     }
+    else if (message.Type === "groupMessage"){
+      console.log("We're currently in groupMessage", message)
+        socket.send(JSON.stringify(message))
+
+    }
   } else {
     console.error("WebSocket is not open. Ready state:", socket.readyState);
   }
