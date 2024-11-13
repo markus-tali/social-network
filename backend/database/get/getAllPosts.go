@@ -12,7 +12,7 @@ func GetAllPosts() ([]structs.Post, error) {
 	defer db.Close()
 	var post structs.Post
 	var posts []structs.Post
-	rows, err := db.Query("SELECT id, username, title, content, avatar, createdAt FROM posts ORDER BY createdAt DESC")
+	rows, err := db.Query("SELECT id, username, title, content, avatar, createdAt FROM posts WHERE group_id IS NULL OR group_id = 0 ORDER BY createdAt DESC")
 	helpers.CheckError(err)
 	defer rows.Close()
 
@@ -20,7 +20,6 @@ func GetAllPosts() ([]structs.Post, error) {
 		err := rows.Scan(&post.ID, &post.Username, &post.Title, &post.Content, &post.Avatar, &post.CreatedAt)
 		posts = append(posts, post)
 		helpers.CheckError(err)
-		// fmt.Printf("postID: %d, postUSERNAME: %s, postTITLE: %s, postCONTENT: %s, postTHREAD %s, postLike %d, postDislike %d\n", post.ID, post.Username, post.Title, post.Content, post.Thread, post.Like_count, post.Dislike_count)
 	}
 	helpers.CheckError(err)
 	return posts, nil

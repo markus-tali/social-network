@@ -16,23 +16,19 @@ const Login = ({onLogin, checkSession}) => {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form submitted:", loginData);
         try {
-            console.log(JSON.stringify(loginData))
             const response = await fetch("http://localhost:8081/login", {
                 method: 'POST',
                 credentials:'include',
                 headers: {'Content-Type':'application/json'},
                 body: JSON.stringify(loginData)
             });
-            console.log(response)
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(errorText || 'Network response was not ok');
             }
             const userData = await response.json()
             onLogin(userData);
-            console.log("user date ", userData)
             await checkSession()
         } catch (error) {
             console.error('Error submitting form:', error);

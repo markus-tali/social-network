@@ -21,7 +21,6 @@ func InsertFollowing(userFollowing, userFollowedBy string, status string) error 
 			fmt.Println("usernotfound")
 			return fmt.Errorf("user %s not found", userFollowedBy)
 		}
-		fmt.Println("isthiswhatswrong?")
 		return err
 	}
 
@@ -34,13 +33,11 @@ func InsertFollowing(userFollowing, userFollowedBy string, status string) error 
 	_, err = db.Exec(`INSERT INTO follows (follower_username, followed_username, status) VALUES (?, ?, ?)`,
 		userFollowing, userFollowedBy, status)
 	if err != nil {
-		fmt.Println("orisitthis")
 		return err
 	}
 
 	if isPrivate && status == "pending" {
-		fmt.Println("gotinhere")
-		return InsertNotification(userFollowing, userFollowedBy)
+		return InsertNotification("followRequest", userFollowing, userFollowedBy, 0)
 	}
 	return nil
 }

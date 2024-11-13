@@ -1,8 +1,6 @@
 package get
 
 import (
-	"fmt"
-
 	"main.go/backend/database/create"
 	"main.go/backend/helpers"
 	"main.go/backend/structs"
@@ -13,7 +11,6 @@ func GetAllMessages(username, ToUser string) ([]structs.SMessage, error) {
 	helpers.CheckError(err)
 	defer db.Close()
 	var msg structs.SMessage
-	fmt.Printf("my username: %v, the other username: %v\n", username, ToUser)
 	query := `
 	 SELECT fromUser, date, message, toUser 
         FROM messages 

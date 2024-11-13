@@ -13,3 +13,8 @@ type GroupCreationRequest struct {
 	Description string   `json:"description"`
 	Invites     []string `json:"invites"` // List of invited friends' usernames
 }
+type GroupMembers struct {
+	Id       string  `json:"id"`
+	Group_Id []Group `json:"group_id"`
+	Username string  `json:"username"`
+}

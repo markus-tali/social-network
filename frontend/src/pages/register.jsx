@@ -23,7 +23,6 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form submitted:", formData);
 
         const formDataToSend = new FormData();
         for (const key in formData) {
@@ -42,7 +41,6 @@ const Register = () => {
                     throw new Error(`Network response was not ok: ${errorMessage}`);
                 }
                 const result = await response.text();
-                console.log('Form submitted successfully:', result)
             }catch(error) {
                 console.error ('Error submitting form:', error)
             }

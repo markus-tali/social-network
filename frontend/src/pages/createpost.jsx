@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-function CreatePost({ onPostCreated }){
+function CreatePost({ groupId, onPostCreated }){
     const [postTitle, setPostTitle] = useState('')
     const [postContent, setPostContent] = useState('')
     const [selectedFile, setSelectedFile] = useState(null)
@@ -20,6 +20,8 @@ function CreatePost({ onPostCreated }){
         formData.append('title', postTitle)
         formData.append('content', postContent)
         formData.append('privacy', postPrivacy)
+        formData.append('group_id', groupId)
+        console.log("this is groupId:", groupId, typeof(groupId))
         if (selectedFile){
         formData.append('avatar', selectedFile)
         }
@@ -29,10 +31,8 @@ function CreatePost({ onPostCreated }){
                 body: formData,
                 credentials: 'include'
             })
-            console.log(response)
             if (response.ok) {
                 const createdPost = await response.text()
-                console.log('Post created: ', createdPost)
                 onPostCreated()
 
             } else {

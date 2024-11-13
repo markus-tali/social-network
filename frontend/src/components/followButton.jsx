@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 
 const FollowButton = ({ user, currentUser, isInitiallyFollowing,  onFollow, onUnfollow, websocket }) => {
-    console.log("currentuser in isfollwing:", currentUser, user)
     const isPrivate = user.IsPrivate;
 
     const [isFollowing, setIsFollowing] = useState(isInitiallyFollowing);
@@ -11,7 +10,6 @@ const FollowButton = ({ user, currentUser, isInitiallyFollowing,  onFollow, onUn
         setIsFollowing(isInitiallyFollowing);
     }, [isInitiallyFollowing]);
 
-    console.log("isfollowing", isFollowing)
 
     const handleFollowClick = async () => {
         if (isFollowing) {

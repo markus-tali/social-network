@@ -40,12 +40,9 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 		helpers.CheckError(err)
 		return
 	}
-	for _, invitee := range req.Invites {
-		if err := set.AddGroupMember(groupID, invitee, "pending"); err != nil {
-			helpers.CheckError(err)
-			fmt.Printf("Error inviting %s: %v\n", invitee, err)
-		}
-	}
+
+	//add the creator of the group into the group members
+	err = set.AddGroupMember(groupID, creatorUsername, "accepted")
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(struct {

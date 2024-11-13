@@ -8,4 +8,5 @@ type Post struct {
 	Avatar    string    `json:"avatar"`
 	CreatedAt string    `json:"createdAt"`
 	Comment   []Comment `json:"comments"`
+	Group_id  int       `json:"groupId"`
 }

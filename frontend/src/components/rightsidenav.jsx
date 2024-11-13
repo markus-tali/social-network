@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MessageInput from "./chatBox";
 import { sendMessage } from './websocket';
 import setupWebSocket from './websocket';
+import GroupList from "../components/groupList.jsx";
 
 function RightSidenav({fromUsername}) {
     const [users, setUsers] = useState([]);
@@ -11,7 +12,6 @@ function RightSidenav({fromUsername}) {
 
     const [hasNewNotification, setHasNewNotification] = useState(false);
     const [notifications, setNotifications] = useState([]);
-    console.log("notifcation: ", notifications)
     const [isNotificationDropdownVisible, setIsNotificationDropdownVisible] = useState(false);
 
     const [hasNewMessage, setHasNewMessage] = useState(false)
@@ -20,12 +20,10 @@ function RightSidenav({fromUsername}) {
 
     const [isFollowingPrivateUser, setIsFollowingPrivateUser] = useState(false);
 
-    
+    console.log("here are the notifications: ", notifications)
 
     useEffect(() => {
         const socket = setupWebSocket((message) => {
-            console.log("Received WebSocket message:", message); // Logime kõik sõnumid
-            console.log("Message type:", message.Type); // Logime sõnumi tüübi
 
             if (message.Type === "message" && message.To === fromUsername) {
                 // Kui sõnum on mõeldud praegusele kasutajale, lisa see sõnumite loendisse
@@ -41,20 +39,25 @@ function RightSidenav({fromUsername}) {
                 }
             }
             if (message.Type ==="followRequest"){
-                console.log("HURRAY, got in here!")
                 setNotifications((prev) => [...prev, message])
                 setHasNewNotification(true)
             }
             if (message.Type === "groupInvitation"){
-                console.log("Hello, matey!")
                 setNotifications((prev) => [...prev, message])
                 setHasNewNotification(true)
             }
             if (message.Type === "acceptFollowRequest" && message.To === fromUsername) {
-                console.log("Got in here to refresh page")
                 // Handle immediate access to the private profile
                 setIsFollowingPrivateUser(true);
                 // Fetch the profile data or trigger a UI refresh as needed
+            }
+            if (message.Type === "joinGroupRequest"){
+                setNotifications((prev) => [...prev, message])
+                setHasNewNotification(true)
+            }
+            if (message.Type === "eventNotification"){
+                setNotifications((prev) => [...prev, message])
+                setHasNewNotification(true)
             }
         });
 
@@ -69,7 +72,6 @@ function RightSidenav({fromUsername}) {
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                console.log("fetching notificatons")
                 const response = await fetch(`http://localhost:8081/getnotifications`, {
                     method: 'POST',
                     headers: {
@@ -79,7 +81,6 @@ function RightSidenav({fromUsername}) {
                 });
             const oldNotifications = await response.json() || []
 
-                console.log("Fetched notifications: ", oldNotifications);
                 setNotifications(oldNotifications || []);
                 setHasNewNotification(oldNotifications.length > 0);
             } catch (error) {
@@ -97,7 +98,6 @@ function RightSidenav({fromUsername}) {
                     credentials: 'include',
                 });
                 const data = await response.json();
-                console.log("Fetched users: ", data);
                 if (data.users) {
                     setUsers(data.users);
                 } else {
@@ -109,6 +109,8 @@ function RightSidenav({fromUsername}) {
         };
         fetchUsers();
     }, []); // Removed socket setup
+
+
 
     const handleUserClick = async (user) => {
         // Toggle the chat window off if the same user is clicked again
@@ -140,7 +142,6 @@ function RightSidenav({fromUsername}) {
 
             })
             const oldMessages = await response.json()
-            console.log("Old messages: ", oldMessages)
 
             if (Array.isArray(oldMessages)) {
                 // Lisame vanad sõnumid sõnumite loendisse
@@ -170,7 +171,6 @@ function RightSidenav({fromUsername}) {
             Date: new Date().toLocaleString(),
         };
 
-        console.log("new message thingy we do rna", newMessage)
         
         sendMessage(newMessage)
 
@@ -180,16 +180,18 @@ function RightSidenav({fromUsername}) {
 
     const handleAcceptNotification = async (FromUsername, ToUsername) => {
         const acceptFollowMessage = {
-            type: "acceptFollowRequest",
-            from: FromUsername,
-            to: ToUsername,
+            Type: "acceptFollowRequest",
+            From: FromUsername,
+            To: ToUsername,
         };
         sendMessage(acceptFollowMessage);
     
-        // Optionally update the UI
+        // Remove notification from list
         setNotifications((prev) => {
-            const updatedNotifications = prev.filter((n) => n.From !== FromUsername);
-            setHasNewNotification(updatedNotifications.length > 0); // Update icon if no more notifications
+            const updatedNotifications = prev.filter(
+                (n) => !(n.Type === "followRequest" && n.From === FromUsername && n.To === ToUsername)
+            );
+            setHasNewNotification(updatedNotifications.length > 0);
             return updatedNotifications;
         });
         
@@ -197,35 +199,117 @@ function RightSidenav({fromUsername}) {
 
     const handleRejectNotification = async (FromUsername, ToUsername) => {
         const rejectFollowMessage = {
-            type: "rejectFollowRequest",
-            from: FromUsername,
-            to: ToUsername,
+            Type: "rejectFollowRequest",
+            From: FromUsername,
+            To: ToUsername,
         };
         sendMessage(rejectFollowMessage);
 
+        // Remove notification from list
         setNotifications((prev) => {
-            const updatedNotifications = prev.filter((n) => n.From !== FromUsername);
-            setHasNewNotification(updatedNotifications.length > 0); // Update icon if no more notifications
+            const updatedNotifications = prev.filter(
+                (n) => !(n.Type === "followRequest" && n.From === FromUsername && n.To === ToUsername)
+            );
+            setHasNewNotification(updatedNotifications.length > 0);
             return updatedNotifications;
         });;
     };
 
-    const handleAcceptGroupInvite = async (FromUsername, ToUsername) => {
+    const handleAcceptGroupInvite = async (GroupId, ToUsername, FromUsername) => {
         const acceptInviteMessage = {
-            type: "acceptInviteMessage",
-            from: FromUsername,
-            to: ToUsername
+            Type: "acceptInviteMessage",
+            Group_id: GroupId,
+            To: ToUsername,
+            From: FromUsername
         }
         sendMessage(acceptInviteMessage);
     
-        // Optionally update the UI
+        // Remove notification from list
         setNotifications((prev) => {
-            const updatedNotifications = prev.filter((n) => n.From !== FromUsername);
-            setHasNewNotification(updatedNotifications.length > 0); // Update icon if no more notifications
+            const updatedNotifications = prev.filter(
+                (n) => !(n.Type === "groupInvitation" && n.Group_id === GroupId && n.From === FromUsername && n.To === ToUsername)
+            );
+            setHasNewNotification(updatedNotifications.length > 0);
+            return updatedNotifications;
+        });
+    }
+    const handleRejectGroupInvite = async (GroupId, ToUsername,  FromUsername) => {
+        const rejectInviteMessage = {
+            Type: "rejectInviteMessage",
+            Group_id: GroupId,
+            To: ToUsername,
+            From: FromUsername
+
+            
+            
+        }
+        sendMessage(rejectInviteMessage)
+
+        // Remove notification from list
+         setNotifications((prev) => {
+            const updatedNotifications = prev.filter(
+                (n) => !(n.Type === "groupInvitation" && n.Group_id === GroupId && n.From === FromUsername && n.To === ToUsername)
+            );
+            setHasNewNotification(updatedNotifications.length > 0);
+            return updatedNotifications;
+         })
+    }
+
+    const handleAcceptGroupJoin = async (GroupId, ToUsername, FromUsername) => {
+        const acceptGroupJoinMessage = {
+            Type: "acceptGroupJoin",
+            Group_id: GroupId,
+            To: ToUsername,
+            From: FromUsername
+        }
+        sendMessage(acceptGroupJoinMessage);
+    
+        // Remove notification from list
+        setNotifications((prev) => {
+            const updatedNotifications = prev.filter(
+                (n) => !(n.Type === "joinGroupRequest" && n.Group_id === GroupId && n.To === FromUsername && n.From === ToUsername)
+            );
+            setHasNewNotification(updatedNotifications.length > 0);
             return updatedNotifications;
         });
     }
 
+    const handleRejectGroupJoin = async (GroupId, ToUsername, FromUsername) => {
+        const rejectGroupJoinMessage = {
+            Type: "rejectGroupJoin",
+            Group_id: GroupId,
+            To: ToUsername,
+            From: FromUsername
+        }
+        sendMessage(rejectGroupJoinMessage);
+    
+        // Remove notification from list
+        setNotifications((prev) => {
+            const updatedNotifications = prev.filter(
+                (n) => !(n.Type === "joinGroupRequest" && n.Group_id === GroupId && n.To === FromUsername && n.From === ToUsername)
+            );
+            setHasNewNotification(updatedNotifications.length > 0);
+            return updatedNotifications;
+        });
+    }
+    const handleOKEvent = async (GroupId, ToUsername, FromUsername) => {
+        const OKEventMessage = {
+            Type: "OKEvent",
+            Group_id: GroupId,
+            To: ToUsername,
+            From: FromUsername
+        }
+        sendMessage(OKEventMessage)
+    
+        // Remove notification from list
+        setNotifications((prev) => {
+            const updatedNotifications = prev.filter(
+                (n) => !(n.Type === "eventNotification" && n.Group_id === GroupId && n.From === FromUsername && n.To === ToUsername)
+            );
+            setHasNewNotification(updatedNotifications.length > 0);
+            return updatedNotifications;
+        });
+    }
     const toggleUserList = () => {
         setIsUserListVisible(!isUserListVisible)
     }
@@ -234,7 +318,6 @@ function RightSidenav({fromUsername}) {
         setIsNotificationDropdownVisible(!isNotificationDropdownVisible);
 
     };
-    
 
     return (
         <div className='users'>
@@ -250,19 +333,33 @@ function RightSidenav({fromUsername}) {
         ) : (
             <ul>
                 {notifications.map((notification, index) => (
-                    <li key={index}>
+                    <li className='notification' key={index}>
                         {notification.Type === "followRequest" && (
                             <>
                                 {notification.From} wants to follow you.
-                                <button onClick={() => handleAcceptNotification(notification.From, notification.To)}>Accept</button>
-                                <button onClick={() => handleRejectNotification(notification.From, notification.To)}>Reject</button>
+                                <button className='notButton' onClick={() => handleAcceptNotification(notification.From, notification.To)}>Accept</button>
+                                <button className='notButton' onClick={() => handleRejectNotification(notification.From, notification.To)}>Reject</button>
                             </>
                         )}
                         {notification.Type === "groupInvitation" && (
                             <>
-                                {notification.From} invited you to join group {notification.GroupName || "a group"}.
-                                <button onClick={() => handleAcceptGroupInvite(notification.GroupId)}>Accept</button>
-                                <button onClick={() => handleRejectGroupInvite(notification.GroupId)}>Reject</button>
+                                {notification.From} invited you to join group {notification.GroupTitle}
+                                <button className='notButton' onClick={() => handleAcceptGroupInvite(notification.Group_id, notification.To, notification.From)}>Accept</button>
+                                <button className='notButton' onClick={() => handleRejectGroupInvite(notification.Group_id, notification.To, notification.From)}>Reject</button>
+                            </>
+                        )}
+                        {notification.Type === "joinGroupRequest" && (
+                            <>
+                                {notification.From} wants to join group {notification.Title}
+                                <button className='notButton' onClick={() => handleAcceptGroupJoin(notification.Group_id, notification.From, notification.To)}>Accept</button>
+                                <button className='notButton' onClick={() => handleRejectGroupJoin(notification.Group_id, notification.From, notification.To)}>Reject</button>
+                            </>
+                        )}
+                         {notification.Type === "eventNotification" && (
+                            <>
+                                {notification.From} has created an event in {notification.GroupTitle}
+                                <button className='notButton' onClick={() => handleOKEvent(notification.Group_id, notification.To, notification.From)}>OK</button>
+
                             </>
                         )}
                     </li>
@@ -297,7 +394,10 @@ function RightSidenav({fromUsername}) {
                     <li>No users found</li>
                 )}
             </ul>
+            < GroupList/>
+            
 </ div>
+
                 )}
          
             {selectedUser && (

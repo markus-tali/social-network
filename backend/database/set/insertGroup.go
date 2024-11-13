@@ -1,6 +1,10 @@
 package set
 
-import "main.go/backend/database/create"
+import (
+	"fmt"
+
+	"main.go/backend/database/create"
+)
 
 func CreateGroup(creator, title, description string) (int, error) {
 
@@ -13,5 +17,6 @@ func CreateGroup(creator, title, description string) (int, error) {
 		return 0, err
 	}
 	groupID, err := res.LastInsertId()
+	fmt.Println("this is creategroup, groupid:", groupID)
 	return int(groupID), err
 }

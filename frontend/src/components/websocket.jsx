@@ -19,7 +19,6 @@ export function setupWebSocket(onMessageReceived) {
   }; 
   
   socket.onmessage= ((event) => {
-    console.log("Message recieved in webcsosk, yes", event.data)
     const message = JSON.parse(event.data);
     onMessageReceived(message)
   })
@@ -27,37 +26,75 @@ export function setupWebSocket(onMessageReceived) {
     console.error("WebSocket error:", error);
   });
   socket.onclose =( (event) => {
-    console.log("WebSocket closed:", event);
+    console.log("WebSocket closed:", event, event.reason, event.code);
   });
   return socket;
 }
 
 export function sendMessage(message) {
-  console.log("got in sendMessage")
   if (socket && socket.readyState === WebSocket.OPEN) {
     console.log("socket is open")
-    if (message.type === "acceptFollowRequest"){
-      console.log("hey, you have recieved a message: ", message)
+    console.log("message is: ", message)
+
+    if (message.Type === "acceptFollowRequest"){
       socket.send(JSON.stringify(message))
 
-    } else if (message.type === "rejectFollowRequest") {
-      console.log("hey, you have received a reject follow request message:", message);
+    } else if (message.Type === "rejectFollowRequest") {
       socket.send(JSON.stringify({
-        type: "rejectFollowRequest",
-        from: message.from,
-        to: message.to
+        Type: "rejectFollowRequest",
+        From: message.From,
+        To: message.To
       }));
 
-    } else if (message.Type === "message"){
-      console.log("message", JSON.stringify(message))
+    }else if(message.Type === "acceptInviteMessage"){
       socket.send(JSON.stringify({
-        type: "message",
-        from: message.From,
-        to: message.To,
-        message: message.Message,
-        date: message.Date
+        Type:"acceptInviteMessage",
+        Group_id: message.Group_id,
+        To:message.To,
+        From: message.From
+      }))
+
+    }else if(message.Type === "rejectInviteMessage"){
+      socket.send(JSON.stringify({
+        Type: "rejectInviteMessage",
+        Group_id: message.Group_id,
+        To: message.To,
+        From: message.From
       }));
-      console.log("Made it here twice")
+
+    } else if (message.Type === "groupInvitation"){
+      console.log("GOT IN INVITAIONREQUEST, here is message: ", message)
+      socket.send(JSON.stringify(message))
+
+    }else if (message.Type === "joinGroupRequest"){
+      console.log("We're currently in joinGroupRequest", message)
+        socket.send(JSON.stringify(message))
+        
+    }else if (message.Type === "acceptGroupJoin"){
+      console.log("We're currently in acceptGroupJoin", message)
+        socket.send(JSON.stringify(message))
+
+    }else if (message.Type === "rejectGroupJoin"){
+      console.log("We're currently in rejectGroupJoin", message)
+        socket.send(JSON.stringify(message))
+
+    }else if (message.Type === "eventCreation"){
+      console.log("We're currently in eventCreation", message)
+        socket.send(JSON.stringify(message))
+
+    }else if (message.Type === "OKEvent"){
+      console.log("We're currently in OKEvent", message)
+        socket.send(JSON.stringify(message))
+
+    }
+    else if (message.Type === "message"){
+      socket.send(JSON.stringify({
+        Type: "message",
+        From: message.From,
+        To: message.To,
+        Message: message.Message,
+        Date: message.Date
+      }));
     }
   } else {
     console.error("WebSocket is not open. Ready state:", socket.readyState);

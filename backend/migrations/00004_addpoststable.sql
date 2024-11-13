@@ -6,7 +6,9 @@ CREATE TABLE posts (
     content TEXT NOT NULL,
     avatar TEXT DEFAULT "",
     privacy TEXT NOT NULL,
-    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    group_id INTEGER,
+    FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
 );
 -- +goose Down
 DROP TABLE posts;

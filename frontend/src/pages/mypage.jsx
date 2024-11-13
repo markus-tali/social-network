@@ -11,7 +11,7 @@ const [refreshData, setRefreshData] = useState(false);
 
 useEffect(() => {
   const socket = setupWebSocket((message) => {
-      if (message.Type === "acceptFollowRequest" && message.to === currentUsername) {
+      if (message.Type === "acceptFollowRequest" && message.To === currentUsername) {
           setIsFollowingPrivateUser(true);
           setRefreshData(true);
       }
@@ -26,13 +26,10 @@ useEffect(() => {
 
 
 
-console.log("1st isPrivate: ", isPrivate)
 
-  console.log("before: ", userData)
 
 
   useEffect(() => {
-    console.log("User data on load:", userData.IsPrivate); // Log the whole userData object
 
     if (userData && typeof userData.IsPrivate !== "undefined") {
         setIsPrivate(userData.IsPrivate);
@@ -41,12 +38,10 @@ console.log("1st isPrivate: ", isPrivate)
     }
 }, [userData]);
 
-  console.log("2nd isPrivate: ", isPrivate)
 
   const handleToggleChange = async () => {
     const newPrivacy = !isPrivate;
     setIsPrivate(newPrivacy);
-    console.log("3rd isPrivate: ", newPrivacy)
     
     try {
       const response = await fetch("http://localhost:8081/toggleuserprivacy", {
@@ -65,7 +60,6 @@ console.log("1st isPrivate: ", isPrivate)
       }
 
       const responseData = await response.json();
-      console.log("response is: ", responseData)
       setIsPrivate(responseData.isPrivate); // Kasuta vastust backendist
       
     } catch (error) {

@@ -15,17 +15,6 @@ func GetAllGroupsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var req struct {
-		Username string `json:"username"`
-	}
-
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
 	groups, err := get.GetAllGroups()
 
 	helpers.CheckError(err)

@@ -3,7 +3,6 @@ import React, {useState, useEffect} from 'react'
 const FollowersAndFollows = () => {
     const [followers, setFollowers] = useState([]);
     const[follows, setFollows] = useState([]);
-    console.log("followers, follows:" , followers,  follows)
 
     const getFollowers = async () => {
         try {
@@ -16,7 +15,6 @@ const FollowersAndFollows = () => {
             });
             if (!response.ok) throw new Error("Failed to fetch followers");
             const data = await response.json();
-            console.log("hree is console logged data, ", data)
             const uniqueFollowers = [...new Set(data.followers.map(f => f.follower_username))];
             setFollowers(uniqueFollowers);
         } catch (error) {

@@ -15,6 +15,7 @@ CREATE TABLE group_members (
     status TEXT NOT NULL DEFAULT 'pending',
     FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
+    UNIQUE(group_id, username)
 );
 
 -- +goose Down

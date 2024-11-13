@@ -612,3 +612,17 @@ margin-left: 20px;
 .groupButton:hover {
     background-color: #5b6eae; 
 }
+
+/* notification */
+
+.notification{
+    border-bottom:#4f545c 2px solid;
+    margin-bottom: 2px;
+    list-style: none;
+}
+.notButton{
+    background-color: #7289DA;
+    border: none;
+    border-radius: 5px;
+
+}

@@ -7,7 +7,7 @@ import (
 )
 
 func RemoveFollowing(follower, followed string) error {
-	fmt.Println("So i made it to remove")
+	fmt.Println("So i made it to remove following")
 	db, err := create.ConnectDB()
 	if err != nil {
 		return err

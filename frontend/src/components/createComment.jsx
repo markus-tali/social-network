@@ -15,7 +15,6 @@ const CreateComment = ({onCommentSubmit, fetchComments}) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if(comment.trim()){
-          console.log("Submitting avatar and comment:", comment, avatar)
             onCommentSubmit(comment, avatar)
             setComment('');
             setavatar(null)

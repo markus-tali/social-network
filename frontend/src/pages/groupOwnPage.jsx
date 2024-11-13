@@ -1,11 +1,21 @@
 import React, {useEffect, useState}from 'react';
+import CreatePost from '../pages/createpost.jsx';
+import GroupPostList from '../components/groupPostList.jsx';
+import { sendMessage } from '../components/websocket.jsx';
+import GroupEvents from '../components/groupEvents.jsx';
 
 const GroupOwnPage = ({ourUserData, group, onClose, websocket}) => {
-
+    
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null); // Track the selected user for invitation
     const [inviteError, setInviteError] = useState(null);
+    const [shouldRefreshPosts, setShouldRefreshPosts] = useState(false)
+    const [isCreatingPost, setIsCreatingPost] = useState(false)
+    const [groupMembers, setGroupMembers] = useState([]);
+    const [isMember, setIsMember] = useState(false)
+    const [joinRequestSent, setJoinRequestSent] = useState(false);
 
+    console.log("groupmembers are: ", groupMembers)
 
     const fetchUsers = async () => {
         try {
@@ -14,7 +24,6 @@ const GroupOwnPage = ({ourUserData, group, onClose, websocket}) => {
                         credentials: 'include',
                     });
                     const data = await response.json();
-                    console.log("Fetched users: ", data);
                     if (data.users) {
                         setUsers(data.users);
                     } else {
@@ -24,11 +33,41 @@ const GroupOwnPage = ({ourUserData, group, onClose, websocket}) => {
                     console.log(error);
                 }
             };
-            useEffect(() => {
-            fetchUsers();
-        }, []); 
 
-        
+        const fetchGroupMembers = async () => {
+            try {
+                console.log("going into fetch")
+                const response = await fetch('http://localhost:8081/getgroupmembers', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        Group_id: group.id,
+                    }),
+                    credentials: 'include',
+                });
+                const data = await response.json();
+                if (data.group_members) {
+                    setGroupMembers(data.group_members);
+                    // Check if the current user is a member of the group
+                    const memberFound = data.group_members.some(
+                        (member) => member.username === ourUserData.Username
+                    );
+                    setIsMember(memberFound);
+                } else {
+                    console.log('No members found for this group');
+                }
+            } catch (error) {
+                console.log('Error fetching group members:', error);
+            }
+        }
+            useEffect(() => {
+                fetchUsers();
+                fetchGroupMembers();
+        }, []);
+
+
     // Function to handle sending the invitation
     const handleSendInvitation = () => {
         if (!selectedUser) {
@@ -36,60 +75,99 @@ const GroupOwnPage = ({ourUserData, group, onClose, websocket}) => {
             return;
         }
 
-        console.log("b4 websocket in groupOwnPage")
-
+        
+        
         const invitationMessage = {
             From: ourUserData.Username, 
             Type: "groupInvitation",
             To: selectedUser,
-            GroupId: group.id,
-            GroupName: group.title,
+            Group_id: parseInt(group.id, 10),
+            GroupTitle: group.title,
             Date: new Date().toLocaleString(),
         };
-        console.log("this is invitationmessage:", invitationMessage)
-        // Send invitation message over WebSocket
-        if (websocket && websocket.readyState === WebSocket.OPEN) {
-            console.log("Invitation sent successfully to WebSocket.");
-
-            websocket.send(JSON.stringify(invitationMessage));
-            alert(`Invitation sent to ${selectedUser}!`);
-            setSelectedUser(null); // Reset the selected user after sending
-            setInviteError(null); // Clear any previous error
-        } else {
-            console.log("WebSocket is not connected. ReadyState:", websocket?.readyState);
-            setInviteError('WebSocket is not connected. Please try again later.');
-        }
+        
+        
+        sendMessage(invitationMessage)
+        setSelectedUser(null); // Reset the selected user after sending
+        setInviteError(null); // Clear any previous error
+        
     };
+    const handlePostCreated = () => {
+        setIsCreatingPost(false)
+        setShouldRefreshPosts((prev) => !prev);
+    }
 
+    const handleSendJoinRequest = () => {
+        const joinRequestMessage = {
+            From: ourUserData.Username,
+            Type: "joinGroupRequest",
+            To: group.creator, // Assuming `group.creator` holds the creator's username
+            Group_id: parseInt(group.id, 10),
+            GroupTitle: group.title,
+            Date: new Date().toLocaleString(),
+        };
+        console.log("this is our joinRequestMessage: ", joinRequestMessage)
+        sendMessage(joinRequestMessage);
+        setJoinRequestSent(true); // Indicate that the request has been sent
+    };
    
     return (
         <div>
-            <button onClick={onClose}>Back to Groups</button>
-            <h2>{group.title}</h2>
-            <p>{group.description}</p>
-            <h3>Group Members</h3>
-            <ul>
-                {group.members?.map((member, index) => (
-                    <li key={index}>{member.username}</li>
-                ))}
-            </ul>
+        <button onClick={onClose}>Back to Groups</button>
+        <h2>{group.title}</h2>
+        <p>{group.description}</p>
 
-        
-            <h3>Invite a User to Join</h3>
-            <select
-                value={selectedUser || ''}
-                onChange={(e) => setSelectedUser(e.target.value)}
-            >
-                <option value="" disabled>Select a user</option>
-                {users.map((user) => (
-                    <option key={user.username} value={user.username}>
-                        {user.username}
-                    </option>
-                ))}
-            </select>
-            <button onClick={handleSendInvitation}>Send Invitation</button>
- {inviteError && <p style={{ color: 'red' }}>{inviteError}</p>}
-        </div>
+        {isMember ? (
+            <>
+                <button onClick={() => setIsCreatingPost(prev => !prev)}>
+                    {isCreatingPost ? 'Cancel' : 'Create New Post'}
+                </button>
+                <div>
+                    {isCreatingPost ? (
+                        <CreatePost groupId={group.id} onPostCreated={handlePostCreated} />
+                    ) : (
+                        <GroupPostList refreshTrigger={shouldRefreshPosts} group={group} />
+                    )}
+                </div>
+
+
+                <h3>Group Members</h3>
+                <ul>
+                    {groupMembers.map((member, index) => (
+                        <li key={index}>{member.username}</li>
+                    ))}
+                </ul>
+
+                <h3>Invite a User to Join</h3>
+                <select
+    value={selectedUser || ''}
+    onChange={(e) => setSelectedUser(e.target.value)}
+>
+    <option value="" disabled>Select a user</option>
+    {users
+        .filter((user) => user.username !== ourUserData.Username) // Filter out the current user
+        .filter((user) => !groupMembers.some((member) => member.username === user.username))
+        .map((user) => (
+            <option key={user.username} value={user.username}>
+                {user.username}
+            </option>
+        ))}
+</select>
+                <button  onClick={handleSendInvitation}>Send Invitation</button>
+                {inviteError && <p style={{ color: 'red' }}>{inviteError}</p>}
+                <GroupEvents ourUserData={ourUserData} group={group}/>            
+            </>
+        ) : (
+            <>
+            <p>You must be a group member to view posts and invite others.</p>
+            {!joinRequestSent ? (
+                <button onClick={handleSendJoinRequest}>Request to Join Group</button>
+            ) : (
+                <p>Join request sent to the group creator.</p>
+            )}
+        </>
+        )}
+    </div>
     );
 };
 

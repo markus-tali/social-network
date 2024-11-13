@@ -20,7 +20,6 @@ import GroupPage from "./grouppage.jsx";
 
     const [isGroupPageVisible, setIsGroupPageVisible] = useState(false);
 
-    console.log("Mainpage userdata: ", userData)
     
 
     const fetchUsers = async () => {
@@ -30,7 +29,6 @@ import GroupPage from "./grouppage.jsx";
                         credentials: 'include',
                     });
                     const data = await response.json();
-                    console.log("Fetched users: ", data);
                     if (data.users) {
                         setUsers(data.users);
                     } else {
@@ -47,13 +45,11 @@ import GroupPage from "./grouppage.jsx";
         
 
     const handlePostCreated = () => {
-        console.log("Refreshing posts...")
         setIsCreatingPost(false)
         setShouldRefreshPosts(prev => !prev);
     }
 
     const toggleUserList = () => {
-        console.log("Toggling User List...");
         setIsUserListVisible(prevState => !prevState); // Kuvame kasutajate loendi
         setSelectedUser(null); // Tühjendame valitud kasutaja
         setIsMyPageVisible(false); // Lülitame profiili lehe välja
@@ -66,7 +62,6 @@ import GroupPage from "./grouppage.jsx";
 
 
     const handleUserClick = async (user) => {
-        console.log("Selected user:", user.username);
         try {
             // Eeldame, et meil on URL `/getUserDetails` ja see aktsepteerib kasutaja ID-d.
             const response = await fetch(`http://localhost:8081/getselecteduser`, {
@@ -80,7 +75,6 @@ import GroupPage from "./grouppage.jsx";
             const userDetails = await response.json();
     
             if (userDetails) {
-                console.log("Fetched user details: ", userDetails);
                 setSelectedUser(userDetails); // Seame valitud kasutaja andmed
                 setIsUserListVisible(false);   // Peidame kasutajate loendi
                 setIsMyPageVisible(true);      // Kuvame profiili
@@ -97,7 +91,6 @@ import GroupPage from "./grouppage.jsx";
     };
     
     const handleFollow = async (currentUsername, username) => {
-        console.log("in handlefollow, users: ", currentUsername, username)
         try {
             const response = await fetch('http://localhost:8081/follow', {
                 method: 'POST',
@@ -132,7 +125,6 @@ import GroupPage from "./grouppage.jsx";
     
             if (response.ok) {
                 console.log(`Successfully unfollowed ${username}`);
-                // Optionally update state or trigger a re-fetch of user data if needed
             } else {
                 console.error(`Failed to unfollow ${username}`);
             }

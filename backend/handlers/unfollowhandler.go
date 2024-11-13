@@ -33,7 +33,7 @@ func UnfollowHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = deletion.RemoveNotification(userData.Follower, userData.Followed)
+	err = deletion.RemoveNotification("followRequest", userData.Follower, userData.Followed)
 	if err != nil {
 		http.Error(w, "Failed to delete notification", http.StatusInternalServerError)
 		fmt.Println("Error deleting notification:", err)

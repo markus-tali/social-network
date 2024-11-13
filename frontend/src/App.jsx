@@ -18,9 +18,7 @@ const App = () => {
     }
     
     useEffect(() => {
-        console.log("checking seessoin")
         checkSession();
-        console.log("sesoins chekes")
     },[])
     
     useEffect(() => {
@@ -56,7 +54,6 @@ const App = () => {
 
              if (response.ok) {
                  const data = await response.json();
-                 console.log("here is data!", data)
                  if (data.isLoggedIn) {
                      setIsLoggedIn(true); 
                      setUserData(data)
@@ -74,9 +71,7 @@ const App = () => {
         setIsLoggedIn(true);
         setUserData(userDataFromLogin)
         setUsername(userDataFromLogin.Username)
-        console.log("userTataa: ", userDataFromLogin)
         localStorage.setItem('isLoggedIn', 'true');
-        console.log("userData", userData)
     };
 
     const handleLogout = () => {
@@ -86,7 +81,6 @@ const App = () => {
     }
     const handleToggle = () => {
         setShowLogin((prev) => !prev);
-        console.log("handling toggle, my page:", !isMyPageVisible)
     };
 
     return (

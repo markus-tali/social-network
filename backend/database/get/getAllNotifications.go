@@ -14,7 +14,7 @@ func GetAllNotification(username string) ([]structs.SMessage, error) {
 	var msg structs.SMessage
 
 	query := ` 
-	SELECT id, follower_username, followed_username, message
+	SELECT id, follower_username, followed_username, message, group_id, notification_type
 	FROM notifications
 	WHERE (followed_username = ?)
 	ORDER BY id ASC 
@@ -28,11 +28,10 @@ func GetAllNotification(username string) ([]structs.SMessage, error) {
 
 	var notifications []structs.SMessage
 	for rows.Next() {
-		err := rows.Scan(&msg.NotificationId, &msg.From, &msg.To, &msg.Message)
+		err := rows.Scan(&msg.NotificationId, &msg.From, &msg.To, &msg.Message, &msg.GroupId, &msg.Type)
 		if err != nil {
 			return nil, err
 		}
-		msg.Type = "followRequest"
 		notifications = append(notifications, msg)
 	}
 	if err := rows.Err(); err != nil {

@@ -1,8 +1,6 @@
 package get
 
 import (
-	"fmt"
-
 	"main.go/backend/database/create"
 	"main.go/backend/structs"
 )
@@ -28,7 +26,6 @@ func GetFollowers(username string) ([]structs.Follow, error) {
 		if err := rows.Scan(&follow.FollowerUsername); err != nil {
 			return nil, err
 		}
-		fmt.Println("this is follow:", follow)
 		followers = append(followers, follow)
 	}
 	return followers, nil
