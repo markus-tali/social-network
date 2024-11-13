@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react'
 import { sendMessage } from '../components/websocket.jsx';
-
-
 const GroupEvents = ({ourUserData, group}) => {
   const [events, setEvents] = useState([]);
   const [title, setTitle] = useState('');
@@ -10,7 +8,6 @@ const GroupEvents = ({ourUserData, group}) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [userStatuses, setUserStatuses] = useState({});
-
   const handleCreateEvent = () => {
     setLoading(true);
     setMessage('');
@@ -44,12 +41,10 @@ const GroupEvents = ({ourUserData, group}) => {
       GroupTitle: group.title,
     }
     sendMessage(eventCreationMessage)
-
     setMessage(`Event created successfully! Event ID: ${data.eventId}`);
     setTitle(''); // Clear form inputs
     setDescription('');
     setTime('');
-
   })
   .catch(error => {
     console.error("Error creating event:", error);
@@ -59,7 +54,6 @@ const GroupEvents = ({ourUserData, group}) => {
     setLoading(false);
   });
 };
-
 useEffect(() => {
   const fetchEvents = async () => {
     try {
@@ -70,45 +64,33 @@ useEffect(() => {
         },
         body: JSON.stringify({ group_id: parseInt(group.id, 10) }), // Edastame gruppide ID
       });
-
       if (!response.ok) {
         throw new Error('Failed to fetch events');
       }
       const data = await response.json();
       setEvents(data || []); // Seame kätte saadud sündmused
-
-
       const initialStatuses = {};
       data.forEach((event) => {
         const savedStatus = localStorage.getItem(`eventStatus_${event.id}`);
         initialStatuses[event.id] =savedStatus || event.participationStatus || 'not going'; // Eeldame, et server tagastab staatuse
       });
       setUserStatuses(initialStatuses);
-
     } catch (error) {
       console.error('Error loading events:', error);
     }
   };
-
   fetchEvents();
   fetchUserStatuses();
 }, [group.id]);
-
-
-
 // see on participation shit
 const handleToggleParticipation = (eventId) => {
   const newStatus = userStatuses[eventId] === 'going' ? 'not going' : 'going';
-
   const participationData = {
     event_id: eventId,
     username: ourUserData.Username,
     status: newStatus,
   };
-
   localStorage.setItem(`eventStatus_${eventId}`, newStatus);
-
-
   fetch('http://localhost:8081/updateeventstatushandler', {
     method: 'POST',
     headers: {
@@ -134,7 +116,6 @@ const handleToggleParticipation = (eventId) => {
       setMessage('Error updating participation.');
     });
 };
-
 const fetchUserStatuses = async () => {
   try {
     const response = await fetch('http://localhost:8081/getuserstatuses', {
@@ -147,24 +128,19 @@ const fetchUserStatuses = async () => {
         username: ourUserData.Username,
       }),
     });
-
     if (!response.ok) {
       throw new Error('Failed to fetch user statuses');
     }
-
     const data = await response.json();
     const statuses = {};
     data.forEach((status) => {
       statuses[status.event_id] = status.participationStatus || 'not going';
     });
-
     setUserStatuses(statuses);
   } catch (error) {
     console.error('Error fetching user statuses:', error);
   }
 };
-
-
 return (
   <div>
     <h2>Create a New Event</h2>
@@ -211,5 +187,4 @@ return (
   </div>
 );
 };
-
 export default GroupEvents
