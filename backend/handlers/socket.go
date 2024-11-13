@@ -39,7 +39,7 @@ func handleMessages() {
 		switch sms.Type {
 		case "message":
 
-			set.InsertMessage(sms.From, sms.To, sms.Message, sms.Date)
+			set.InsertMessage(sms.Type, sms.From, sms.To, sms.Message, sms.Date, 0)
 			for client := range clientConnections {
 				fmt.Printf("sms.To: %s, client.connOwnerId: %s\n", sms.To, client.connOwnerId)
 				if sms.To == client.connOwnerId {
@@ -265,10 +265,11 @@ func handleMessages() {
 
 			fmt.Println("Here are the groupMembers for groupMessage: ", groupMembers)
 
+			set.InsertMessage(sms.Type, sms.From, "", sms.Message, sms.Date, sms.GroupId)
 			for client := range clientConnections {
 				for _, member := range groupMembers {
 					fmt.Println("Here is a member: ", member)
-					if client.connOwnerId == member.Username { // Avoid sending it to the sender
+					if client.connOwnerId == member.Username && client.connOwnerId != sms.From { // Avoid sending it to the sender
 						client.mu.Lock()
 						fmt.Printf("client.connOwnerId: %s, member.Username: %s\n", client.connOwnerId, member.Username)
 						err := client.connection.WriteJSON(sms)

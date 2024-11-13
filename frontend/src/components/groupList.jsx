@@ -4,31 +4,31 @@ import { sendMessage } from './websocket';
 import setupWebSocket from './websocket';
 
 
-const GroupList = ({ourUsername}) => {
+const GroupList = ({ourUsername, selectedGroup, onGroupSelect, messages, setMessages, newMessageCount, newMessageGroups}) => {
     const [groups, setGroups] = useState([]);
-  const [selectedGroup, setSelectedGroup] = useState(null);
-  const [messages, setMessages] = useState([]);
+  
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   console.log("Here should be the groupMessages: ", messages)
 
-useEffect(() => {
-  const socket = setupWebSocket((message) => {
-    console.log("recieved message::::::", message)
-    if (message.Type === "groupMessage"){
-    console.log("recieved message::::::43214", message)
+// useEffect(() => {
+//   const socket = setupWebSocket((message) => {
+//     console.log("recieved message::::::", message)
+//     if (message.Type === "groupMessage"){
+//     console.log("recieved message::::::43214", message)
 
-      setMessages((prevMessages) => [...prevMessages, message]);
-    }
-  })
-  return () => {
-    if (socket && socket.close) {
-        socket.close(); // Close the socket if it exists
-    }
-};
-; // Puhastame WebSocketi ühenduse komponenti sulgedes
-}, [selectedGroup])
+//       setMessages((prevMessages) => [...prevMessages, message]);
+//     }
+//   })
+//   return () => {
+//     if (socket && socket.close) {
+//         socket.close(); // Close the socket if it exists
+//     }
+// };
+// ; // Puhastame WebSocketi ühenduse komponenti sulgedes
+// }, [selectedGroup])
 
 
   const fetchGroups = async () => {
@@ -101,11 +101,14 @@ useEffect(() => {
     <div>
       <h2>Group List</h2>
       <ul>
-        {groups.length > 0 ? (
+        {groups && groups.length > 0 ? (
           groups.map((group) => (
             <li key={group.id}>
-              <button onClick={() => setSelectedGroup(group)}>
+              <button onClick={() => onGroupSelect(group)}  style={{ fontWeight: newMessageGroups.includes(group.id) ? 'bold' : 'normal' }}>
                 {group.title}
+                {newMessageCount[group.id] > 0 && (
+                                    <span> ({newMessageCount[group.id]})</span>  // Display unread message count
+                                )}
               </button>
             </li>
           ))
@@ -114,25 +117,7 @@ useEffect(() => {
         )}
       </ul>
 
-      {/* Kui grupp on valitud, kuvame selle grupi vestluse */}
-      {selectedGroup && (
-        <div>
-          <h3>Chat with {selectedGroup.title}</h3>
-          <div>
-            {messages.length > 0 ? (
-              messages.map((message) => (
-                <div key={message.id}>
-                  <strong>{message.From}</strong>: {message.Message}
-                  <small> - {message.Date}</small>
-                </div>
-              ))
-            ) : (
-              <p>No messages</p>
-            )}
-          </div>
-          <MessageInput groupId={selectedGroup.id} onSendMessage={handleSendMessage} />
-        </div>
-      )}
+      
     </div>
   );
 };

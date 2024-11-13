@@ -19,11 +19,13 @@ function RightSidenav({fromUsername}) {
 
     const [hasNewMessage, setHasNewMessage] = useState(false)
     const [newMessageUsers, setNewMessageUsers] = useState([])
+    const [newMessageGroups, setNewMessageGroups] = useState([])
     const [newMessageCount, setNewMessageCount] = useState({})
 
     const [isFollowingPrivateUser, setIsFollowingPrivateUser] = useState(false);
 
     console.log("here are the notifications: ", notifications)
+
 
     useEffect(() => {
         const socket = setupWebSocket((message) => {
@@ -44,7 +46,16 @@ function RightSidenav({fromUsername}) {
 
             if(message.Type === "groupMessage"){
                 setMessages((prevMessages) => [...prevMessages, message]);
-            }
+
+                if (!selectedGroup || message.Group_id !== selectedGroup.id) {
+                    setNewMessageCount((prevCount) => ({
+                        ...prevCount,
+                        [message.Group_id]: (prevCount[message.Group_id] || 0) + 1, // Increment count for this group
+                    }));
+                }
+                setNewMessageGroups((prev) => [...new Set([...prev, message.Group_id])])
+                setHasNewMessage(true)
+        }
 
             if (message.Type ==="followRequest"){
                 setNotifications((prev) => [...prev, message])
@@ -165,10 +176,43 @@ function RightSidenav({fromUsername}) {
     };
 
     const handleGroupClick = async (group) => {
+        if (selectedGroup && selectedGroup.id === group.id) {
+            setSelectedGroup(null);
+            setMessages([]); // Clear messages when closing the chat
+            return;
+        }
+
         setSelectedGroup(group);
         setSelectedUser(null); // Clear selectedUser to indicate a group chat
         setMessages([]);
+        setNewMessageCount((prevCount) => ({ ...prevCount, [group.id]: 0 }))
+        setHasNewMessage(false)
+
+
         // Fetch group messages here
+        try{
+            const response = await fetch('http://localhost:8081/getgroupmessages', {
+                method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'include',
+            headers: {'Content-Type': 'application/json'},
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify({ Group_id: parseInt(group.id, 10) })
+
+            })
+            const oldMessages = await response.json()
+
+            if (Array.isArray(oldMessages)) {
+                // Lisame vanad sõnumid sõnumite loendisse
+                setMessages((prevMessages) => [...oldMessages, ...prevMessages]);
+            } else {
+                console.log('No old messages found');
+            }
+        }
+        catch(error) {
+            console.error('Error fetching messages:', error)
+        }
     };
 
     const handleCloseChat = () => {
@@ -177,18 +221,16 @@ function RightSidenav({fromUsername}) {
     };
 
     const handleSendMessage = (messageContent) => {
-        if (!selectedUser) return;
 
         const newMessage = {
             Type: selectedGroup ? "groupMessage" : "message",
             From: fromUsername,
             Message: messageContent,
-            To: selectedUser.username,
             Date: new Date().toLocaleString(),
-            ...(selectedGroup ? {Group_id: selectedGroup.id} : {To: selectedUser.username })
+            ...(selectedGroup ? {Group_id: parseInt(selectedGroup.id, 10)} : {To: selectedUser.username })
         };
 
-        
+        console.log("Hello world ", newMessage)
         sendMessage(newMessage)
 
         setMessages((prevMessages) => [...prevMessages, newMessage]);
@@ -411,15 +453,15 @@ function RightSidenav({fromUsername}) {
                     <li>No users found</li>
                 )}
             </ul>
-            < GroupList ourUsername={fromUsername} onGroupClick={handleGroupClick}/>
+            < GroupList ourUsername={fromUsername} selectedGroup={selectedGroup} onGroupSelect={handleGroupClick} messages={messages} setMessages={setMessages} newMessageCount={newMessageCount} newMessageGroups={newMessageGroups}/>
             
 </ div>
 
                 )}
          
-            {selectedUser && (
+            {(selectedUser || selectedGroup) && (
                 <div className='chatWindow'>
-                    <h3>Chat with {selectedUser.username}</h3>
+                    <h3>Chat with {selectedGroup ? selectedGroup.title : selectedUser.username}</h3>
                     <div className='messageDisplay'>
                         {messages.map((msg, index) => (
                             <div key={index}>

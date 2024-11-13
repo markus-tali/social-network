@@ -38,6 +38,7 @@ func main() {
 	http.HandleFunc("/createevent", handlers.CreateEventHandler)
 	http.HandleFunc("/getgroupevents", handlers.GetAllGroupEvents)
 	http.HandleFunc("/updateeventstatushandler", handlers.UpdateEventStatusHandler)
+	http.HandleFunc("/getgroupmessages", handlers.GetGroupMessagesHandler)
 
 	fmt.Println("Backend server is running")
 
