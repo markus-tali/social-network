@@ -255,6 +255,33 @@ func handleMessages() {
 			fmt.Println("in OKEvent")
 			err := deletion.RemoveNotification("eventNotification", sms.From, sms.To)
 			helpers.CheckError(err)
+
+		case "groupMessage":
+			fmt.Println("in groupMessage")
+
+			fmt.Println("HERE IS THE MESSAGE IN GROUPMESSAGE: ", sms)
+			groupMembers, err := get.GetGroupMembers(sms.GroupId)
+			helpers.CheckError(err)
+
+			fmt.Println("Here are the groupMembers for groupMessage: ", groupMembers)
+
+			for client := range clientConnections {
+				for _, member := range groupMembers {
+					fmt.Println("Here is a member: ", member)
+					if client.connOwnerId == member.Username { // Avoid sending it to the sender
+						client.mu.Lock()
+						fmt.Printf("client.connOwnerId: %s, member.Username: %s\n", client.connOwnerId, member.Username)
+						err := client.connection.WriteJSON(sms)
+						if err != nil {
+							fmt.Println("Error sending group message:", err)
+							client.connection.Close()
+							delete(clientConnections, client)
+						}
+						client.mu.Unlock()
+					}
+				}
+			}
+
 		}
 	}
 }

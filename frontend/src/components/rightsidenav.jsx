@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import MessageInput from "./chatBox";
 import { sendMessage } from './websocket';
 import setupWebSocket from './websocket';
-import GroupList from "../components/groupList.jsx";
+import GroupList from "./groupList.jsx";
 
 function RightSidenav({fromUsername}) {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
+
+    const [selectedGroup, setSelectedGroup] = useState(null)
+
     const [messages, setMessages] = useState([]); 
     const [isUserListVisible, setIsUserListVisible] = useState(false)
 
@@ -38,6 +41,11 @@ function RightSidenav({fromUsername}) {
                     setHasNewMessage(true); // New message from a user you're not chatting with
                 }
             }
+
+            if(message.Type === "groupMessage"){
+                setMessages((prevMessages) => [...prevMessages, message]);
+            }
+
             if (message.Type ==="followRequest"){
                 setNotifications((prev) => [...prev, message])
                 setHasNewNotification(true)
@@ -67,7 +75,7 @@ function RightSidenav({fromUsername}) {
             }
         };
     ; // Puhastame WebSocketi ühenduse komponenti sulgedes
-    }, [fromUsername, selectedUser]); // Jooksuta WebSocketi ühendus kasutaja nime põhjal
+    }, [fromUsername, selectedUser, selectedGroup]); // Jooksuta WebSocketi ühendus kasutaja nime põhjal
 
     useEffect(() => {
         const fetchNotifications = async () => {
@@ -121,6 +129,7 @@ function RightSidenav({fromUsername}) {
         }
 
         setSelectedUser(user);
+        setSelectedGroup(null)
         setMessages([])
         setHasNewMessage(false)
         setNewMessageUsers((prev) => prev.filter((username) => username !== user.username));
@@ -155,6 +164,13 @@ function RightSidenav({fromUsername}) {
         }
     };
 
+    const handleGroupClick = async (group) => {
+        setSelectedGroup(group);
+        setSelectedUser(null); // Clear selectedUser to indicate a group chat
+        setMessages([]);
+        // Fetch group messages here
+    };
+
     const handleCloseChat = () => {
         setSelectedUser(null);
         setMessages([])
@@ -164,11 +180,12 @@ function RightSidenav({fromUsername}) {
         if (!selectedUser) return;
 
         const newMessage = {
-            Type: "message",
+            Type: selectedGroup ? "groupMessage" : "message",
             From: fromUsername,
             Message: messageContent,
             To: selectedUser.username,
             Date: new Date().toLocaleString(),
+            ...(selectedGroup ? {Group_id: selectedGroup.id} : {To: selectedUser.username })
         };
 
         
@@ -394,7 +411,7 @@ function RightSidenav({fromUsername}) {
                     <li>No users found</li>
                 )}
             </ul>
-            < GroupList/>
+            < GroupList ourUsername={fromUsername} onGroupClick={handleGroupClick}/>
             
 </ div>
 
