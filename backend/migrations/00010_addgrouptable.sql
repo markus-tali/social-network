@@ -18,6 +18,8 @@ CREATE TABLE group_members (
     UNIQUE(group_id, username)
 );
 
+
+
 -- +goose Down
 DROP TABLE group_members;
 DROP TABLE groups;

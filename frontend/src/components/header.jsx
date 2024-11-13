@@ -55,7 +55,6 @@ const Header =  ({onLogout, isCreatingPost, toggleCreatePost, toggleMyPage, isMy
                 <li className='headerlist'>
                     <button className='headerButton' onClick={handleLogoutClick}>Log out</button>
                 </li>
-                <li className='headerlist'><a href="#about">About</a></li>
 
                 </div>
     )}

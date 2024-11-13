@@ -7,13 +7,17 @@ import GroupEvents from '../components/groupEvents.jsx';
 const GroupOwnPage = ({ourUserData, group, onClose, websocket}) => {
     
     const [users, setUsers] = useState([]);
-    const [selectedUser, setSelectedUser] = useState(null); // Track the selected user for invitation
+    const [selectedUser, setSelectedUser] = useState(null);
+
     const [inviteError, setInviteError] = useState(null);
     const [shouldRefreshPosts, setShouldRefreshPosts] = useState(false)
     const [isCreatingPost, setIsCreatingPost] = useState(false)
     const [groupMembers, setGroupMembers] = useState([]);
     const [isMember, setIsMember] = useState(false)
     const [joinRequestSent, setJoinRequestSent] = useState(false);
+    
+    // const [events, setEvents] = useState([]); 
+    // const [userStatuses, setUserStatuses] = useState({});
 
     console.log("groupmembers are: ", groupMembers)
 
@@ -112,62 +116,75 @@ const GroupOwnPage = ({ourUserData, group, onClose, websocket}) => {
     };
    
     return (
-        <div>
-        <button onClick={onClose}>Back to Groups</button>
-        <h2>{group.title}</h2>
-        <p>{group.description}</p>
+        <div className="groupOwnPageBody">
+            {!isMember ? (
+                <>
+                    <button className="groupownBackButton" onClick={onClose}>Back to Groups</button>
+                    <h2 className="groupOwnPageH2">{group.title}</h2>
+                    <p className="groupDescription">{group.description}</p>
 
-        {isMember ? (
-            <>
-                <button onClick={() => setIsCreatingPost(prev => !prev)}>
-                    {isCreatingPost ? 'Cancel' : 'Create New Post'}
-                </button>
-                <div>
-                    {isCreatingPost ? (
-                        <CreatePost groupId={group.id} onPostCreated={handlePostCreated} />
+                    <p>You must be a group member to view posts and invite others.</p>
+                    {!joinRequestSent ? (
+                        <button onClick={handleSendJoinRequest}>Request to Join Group</button>
                     ) : (
-                        <GroupPostList refreshTrigger={shouldRefreshPosts} group={group} />
+                        <p>Join request sent to the group creator.</p>
                     )}
+                </>
+            ) : (
+                <>
+
+                <div className='groupOwnPageheader'>
+
+                <button className="groupownBackButton" onClick={onClose}>Back to Groups</button>
+                    <button className="buttonOwnGroupCreatePost" onClick={() => setIsCreatingPost((prev) => !prev)}>
+                        {isCreatingPost ? 'Cancel' : 'Create New Post'}
+                    </button>
+
+                    <div className='invitationGroup'>
+
+                        <select className='selectButton' value={selectedUser || ''} onChange={(e) => setSelectedUser(e.target.value)} >
+                            <option value="" disabled>Select a user</option>
+                            {users
+                                .filter((user) => user.username !== ourUserData.Username) // Filter out the current user
+                                .filter((user) => !groupMembers.some((member) => member.username === user.username))
+                                .map((user) => (
+                                    <option key={user.username} value={user.username}>
+                                        {user.username}
+                                    </option>
+                                ))}
+                        {inviteError && <p style={{ color: 'red' }}>{inviteError}</p>}
+                        </select>
+                                <button className='sendinvButton' onClick={handleSendInvitation}>Send Invitation</button>
+                    </div>
+                </div>
+
+                <div className='groupInfo1'>
+                    <h2 className="groupOwnPageH2">{group.title}</h2>
+                <div className='groupInfo'>           
+                    <p className="groupDescription">Description: {group.description}</p>
+                    <h3 className="groupOwnPageH3">Group Members</h3>
+                    <ul>
+                        {groupMembers.map((member, index) => (
+                            <li key={index}>{member.username}</li>
+                        ))}
+                    </ul>
+                </div>
                 </div>
 
 
-                <h3>Group Members</h3>
-                <ul>
-                    {groupMembers.map((member, index) => (
-                        <li key={index}>{member.username}</li>
-                    ))}
-                </ul>
 
-                <h3>Invite a User to Join</h3>
-                <select
-    value={selectedUser || ''}
-    onChange={(e) => setSelectedUser(e.target.value)}
->
-    <option value="" disabled>Select a user</option>
-    {users
-        .filter((user) => user.username !== ourUserData.Username) // Filter out the current user
-        .filter((user) => !groupMembers.some((member) => member.username === user.username))
-        .map((user) => (
-            <option key={user.username} value={user.username}>
-                {user.username}
-            </option>
-        ))}
-</select>
-                <button  onClick={handleSendInvitation}>Send Invitation</button>
-                {inviteError && <p style={{ color: 'red' }}>{inviteError}</p>}
-                <GroupEvents ourUserData={ourUserData} group={group}/>            
-            </>
-        ) : (
-            <>
-            <p>You must be a group member to view posts and invite others.</p>
-            {!joinRequestSent ? (
-                <button onClick={handleSendJoinRequest}>Request to Join Group</button>
-            ) : (
-                <p>Join request sent to the group creator.</p>
+                    <div className='groupPosts'>
+                        {isCreatingPost ? (
+                            <CreatePost groupId={group.id} onPostCreated={handlePostCreated} />
+                        ) : (
+                            <GroupPostList refreshTrigger={shouldRefreshPosts} group={group} />
+                        )}
+                        <GroupEvents ourUserData={ourUserData} group={group} />
+                    </div>
+
+                </>
             )}
-        </>
-        )}
-    </div>
+        </div>
     );
 };
 
