@@ -100,11 +100,11 @@ const GroupList = ({ourUsername, selectedGroup, onGroupSelect, messages, setMess
   return (
     <div>
       <h2>Group List</h2>
-      <ul>
+      <ul className='grouplistul'>
         {groups && groups.length > 0 ? (
           groups.map((group) => (
             <li key={group.id}>
-              <button onClick={() => onGroupSelect(group)}  style={{ fontWeight: newMessageGroups.includes(group.id) ? 'bold' : 'normal' }}>
+              <button className='grouplistbutton' onClick={() => onGroupSelect(group)}  style={{ fontWeight: newMessageGroups.includes(group.id) ? 'bold' : 'normal' }}>
                 {group.title}
                 {newMessageCount[group.id] > 0 && (
                                     <span> ({newMessageCount[group.id]})</span>  // Display unread message count

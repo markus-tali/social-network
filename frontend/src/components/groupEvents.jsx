@@ -8,6 +8,8 @@ const GroupEvents = ({ourUserData, group}) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [userStatuses, setUserStatuses] = useState({});
+  const [isCreatingEvent, setIsCreatingEvent] = useState(false);
+
   const handleCreateEvent = () => {
     setLoading(true);
     setMessage('');
@@ -45,6 +47,7 @@ const GroupEvents = ({ourUserData, group}) => {
     setTitle(''); // Clear form inputs
     setDescription('');
     setTime('');
+    setIsCreatingEvent(false); 
   })
   .catch(error => {
     console.error("Error creating event:", error);
@@ -143,48 +146,62 @@ const fetchUserStatuses = async () => {
 };
 return (
   <div>
-    <h2>Create a New Event</h2>
+  <div className='creatingeventsbutton'>
+
+  <button className='groupOwnButton' onClick={() => setIsCreatingEvent((prev) => !prev)}>
+    {isCreatingEvent ? 'Cancel' : 'Create New Event'}
+  </button>
+  {isCreatingEvent && (
     <div>
+      <h2>Create a New Event</h2>
+      <div className='inputforgroup'>
       <input
         type="text"
         placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-      />
+        />
       <textarea
+      className='grouptext'
         placeholder="Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-      />
+        />
       <input
+      className='groupowninput'
         type="datetime-local"
         value={time}
         onChange={(e) => setTime(e.target.value)}
-      />
-      <button onClick={handleCreateEvent} disabled={loading}>
+        />
+      <button className='groupOwnButton' onClick={handleCreateEvent} disabled={loading}>
         {loading ? 'Creating...' : 'Create Event'}
       </button>
+        </div>
     </div>
-    {message && <p>{message}</p>}
-    <h3>Upcoming Events</h3>
-      <ul>
-        {events.map(event => (
-          <li key={event.id}>
-            <strong>{event.title}</strong> - {event.description} <br />
-            <small>{event.time}</small>
-            <button
-              onClick={() => handleToggleParticipation(event.id)}
-              style={{
-                backgroundColor: userStatuses[event.id] === 'going' ? 'green' : 'red',
-                color: 'white',
-              }}
-            >
-              {userStatuses[event.id] === 'going' ? 'You are Going' : ' You are not Going'}
-            </button>
-          </li>
-        ))}
-      </ul>
+  )}
+
   </div>
+  {message && <p>{message}</p>}
+
+  <h3>Upcoming Events</h3>
+  <ul>
+    {events.map((event) => (
+      <li className='newEvents' key={event.id}>
+        <strong>{event.title}</strong> - {event.description} <br />
+        <small>{event.time}</small>
+        <button
+          onClick={() => handleToggleParticipation(event.id)}
+          style={{
+            backgroundColor: userStatuses[event.id] === 'going' ? '#5b6eae' : '#23272A',
+            color: 'white',
+          }}
+          >
+          {userStatuses[event.id] === 'going' ? 'You are Going' : 'You are not Going'}
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>
 );
 };
 export default GroupEvents

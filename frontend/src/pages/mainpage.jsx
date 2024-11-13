@@ -189,7 +189,6 @@ import GroupPage from "./grouppage.jsx";
                 )}
             </div>
     
-            <Footer />
         </div>
     );
     

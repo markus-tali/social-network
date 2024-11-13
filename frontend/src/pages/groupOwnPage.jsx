@@ -175,7 +175,7 @@ const GroupOwnPage = ({ourUserData, group, onClose, websocket}) => {
 
                     <div className='groupPosts'>
                         {isCreatingPost ? (
-                            <CreatePost groupId={group.id} onPostCreated={handlePostCreated} />
+                            <CreatePost  groupId={group.id} onPostCreated={handlePostCreated} />
                         ) : (
                             <GroupPostList refreshTrigger={shouldRefreshPosts} group={group} />
                         )}
